@@ -556,10 +556,19 @@ function render() {
 function syncUi() {
   const badge = $('tierBadge');
   badge.className = 'badge ' + (state.tier === 'CAL-3' ? 'badge-cal3' : state.tier === 'CAL-2' ? 'badge-cal2' : 'badge-cal0');
+
+  // On a phone there is no room for the full tier name; the tier code and
+  // status are the two things an operator actually needs to see.
+  const compact = window.matchMedia('(max-width: 620px)').matches;
   const note = CALIBRATION_TIERS[state.tier]?.label ?? '';
-  badge.textContent = state.tier === 'CAL-0'
-    ? 'CAL-0 · NOT TO SCALE'
-    : `${state.tier} · ${note} · ${state.calStatus}`;
+  if (state.tier === 'CAL-0') {
+    badge.textContent = compact ? 'CAL-0 · NO SCALE' : 'CAL-0 · NOT TO SCALE';
+  } else {
+    badge.textContent = compact
+      ? `${state.tier} · ${state.calStatus}`
+      : `${state.tier} · ${note} · ${state.calStatus}`;
+  }
+  badge.title = `${state.tier} — ${note} — ${state.calStatus}`;
 
   const calibrated = !!(state.H || state.cal2ScaleMmPerPx);
   $('btnPickCheck').disabled = !calibrated;
