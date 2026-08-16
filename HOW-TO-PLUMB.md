@@ -17,19 +17,20 @@ No experience needed. If you can take a photo, you can do this. About **15 minut
 ## Contents
 
 1. [Before you go](#1-before-you-go)
-2. [At the building: safety first](#2-at-the-building-safety-first)
-3. [Step 1 — Pick your wall](#step-1--pick-your-wall)
-4. [Step 2 — Put the target on the wall](#step-2--put-the-target-on-the-wall)
-5. [Step 3 — Stand in the right place](#step-3--stand-in-the-right-place)
-6. [Step 4 — Take the pair of photos](#step-4--take-the-pair-of-photos)
-7. [Step 5 — Calibrate](#step-5--calibrate)
-8. [Step 6 — Check your work](#step-6--check-your-work-dont-skip-this)
-9. [Step 7 — Measure](#step-7--measure)
-10. [Step 8 — Save and upload](#step-8--save-and-upload)
-11. [The one big trap](#the-one-big-trap)
-12. [Common mistakes](#common-mistakes)
-13. [Quick reference card](#quick-reference-card)
-14. [Glossary](#glossary)
+2. [Printing and measuring your target card](#2-printing-and-measuring-your-target-card)
+3. [At the building: safety first](#3-at-the-building-safety-first)
+4. [Step 1 — Pick your wall](#step-1--pick-your-wall)
+5. [Step 2 — Put the target on the wall](#step-2--put-the-target-on-the-wall)
+6. [Step 3 — Stand in the right place](#step-3--stand-in-the-right-place)
+7. [Step 4 — Take the pair of photos](#step-4--take-the-pair-of-photos)
+8. [Step 5 — Calibrate](#step-5--calibrate)
+9. [Step 6 — Check your work](#step-6--check-your-work-dont-skip-this)
+10. [Step 7 — Measure](#step-7--measure)
+11. [Step 8 — Save and upload](#step-8--save-and-upload)
+12. [The one big trap](#the-one-big-trap)
+13. [Common mistakes](#common-mistakes)
+14. [Quick reference card](#quick-reference-card)
+15. [Glossary](#glossary)
 
 ---
 
@@ -40,34 +41,140 @@ No experience needed. If you can take a photo, you can do this. About **15 minut
 | Essential | Why | Cost |
 |---|---|---|
 | **An Android phone** (Chrome) | Plumb works best here — it can take full-resolution photos and lock the camera settings | you have one |
-| **A printed target** | The "ruler" that goes in the photo. Print the pattern, glue it to stiff card | ~$1 |
-| **A steel ruler or tape measure** | To measure your printed target, and to check your work | ~$10 |
+| **A printed target card** | The "ruler" that goes in the photo. [A4](docs/assets/target-a4.svg) or [US Letter](docs/assets/target-letter.svg) — see [section 2](#2-printing-and-measuring-your-target-card) | ~$1 |
+| **A steel rule** | To measure your printed card, and to check your work. A steel rule, not a tape — see [why](#step-4--how-to-measure-well) | ~$10 |
 | Nice to have: **a second known length** | Something on the building you can measure by hand, for checking | free |
-| Nice to have: **a clipboard or foam board** | To keep the target flat and rigid | ~$5 |
+| Nice to have: **stiff card or foam board** | To glue the target to, so it cannot bend | ~$5 |
 
 iPhone works too, but with fewer features — Plumb will tell you which mode you're in.
 
 ### ⚠️ Print your target, then MEASURE it
 
-This is the single most common beginner mistake.
-
-**Printers lie.** Ask for a 200 mm square and you'll often get 197 mm or 203 mm, because of scaling,
-margins, and "fit to page" settings. If you tell Plumb the target is 200 mm when it's really 197 mm,
-**every measurement you take will be 1.5% wrong** — and nothing will look wrong.
-
-So:
-
-1. Print the target.
-2. Glue it to stiff card so it can't bend.
-3. **Measure it with a steel ruler.** Corner to corner, both directions.
-4. Write the real numbers on the back of the card.
-5. Type *those* numbers into Plumb — never the number you asked the printer for.
-
-> Plumb deliberately leaves the size field blank. It will not guess for you.
+This is the single most common beginner mistake, and it gets its own section — read
+[the next one](#2-printing-and-measuring-your-target-card) before you print anything.
 
 ---
 
-## 2. At the building: safety first
+## 2. Printing and measuring your target card
+
+### Download the card
+
+| Paper | File |
+|---|---|
+| **A4** (most of the world) | **[target-a4.svg](docs/assets/target-a4.svg)** |
+| **US Letter** (US, Canada) | **[target-letter.svg](docs/assets/target-letter.svg)** |
+
+Both cards have **identical target geometry** — nominally **150.0 × 100.0 mm** — so it doesn't matter
+which you use. Only the page layout differs.
+
+### This is what the card looks like
+
+The four corners are **checkerboard squares**. The point where the black and white squares meet is
+called a *saddle point*, and it's the whole reason the card is designed this way: it is the single
+most precisely locatable mark you can print. You can see it exactly by eye, and software can find it
+to a fraction of a pixel. **That point is what you tap, and what you measure between.**
+
+```
+   ██▒▒                                    ▒▒██
+   ██▒▒ ①                              ② ▒▒██          ① ② ③ ④  = tap order
+   ▒▒██                                    ██▒▒
+        ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐
+        │                                 │
+        │  |<───── WIDTH ~150 mm ─────>|  │
+        │                                 │
+        │           HEIGHT ~100 mm        │
+        │                                 │
+        └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘
+   ██▒▒                                    ▒▒██
+   ██▒▒ ④                              ③ ▒▒██
+   ▒▒██                                    ██▒▒
+
+   ↑ measure corner-to-corner between the points
+     where black meets white — NOT the paper edge
+```
+
+The real card also carries the measuring instructions, boxes to write your measurements in, and a
+100 mm bar for checking your printer.
+
+### Step 1 — Print at 100%
+
+In the print dialog:
+
+- **Scale: 100%** or **"Actual size"**
+- ❌ Turn **off** "Fit to page", "Shrink to fit", "Scale to fit media"
+- Plain white paper is fine. Matte beats glossy — glossy reflects and hides the corners.
+
+### Step 2 — Check the printer didn't lie
+
+The card has a **100 mm bar** printed at the bottom. Measure it.
+
+- **Reads 100 mm?** Your printer is accurate. Carry on.
+- **Reads 97 mm?** Your printer scaled to 97%. **That's completely fine** — you're about to measure
+  the real card anyway. This is exactly why the app never assumes the nominal size.
+
+> Printers routinely scale by 1–3% because of margins, driver defaults and "fit to page". If you
+> typed 150 mm when the card actually printed at 145.5, **every measurement you take would be 3%
+> wrong** — a 3 m wall would read 3.09 m — and nothing on screen would look wrong.
+
+### Step 3 — Measure what to measure
+
+![What exactly to measure](docs/assets/07-what-to-measure.svg)
+
+**Measure between the saddle points** — the exact spots where black touches white. These are the
+same four points you'll tap in the app, which is what makes the measurement meaningful.
+
+| ✅ Measure this | ❌ Not this |
+|---|---|
+| Where black meets white at each corner | The outer corner of the black squares |
+| Point ① to point ② for the width | The edge of the paper |
+| Point ① to point ④ for the height | The dashed guide rectangle |
+
+Take **four** measurements and write them in the boxes on the card:
+
+| Measurement | Between | Nominal |
+|---|---|---|
+| **Width** | ① → ② | ~150 mm |
+| **Height** | ① → ④ | ~100 mm |
+| **Diagonal A** | ① → ③ | ~180.3 mm |
+| **Diagonal B** | ② → ④ | ~180.3 mm |
+
+**The diagonals are a squareness check.** If they differ by more than about 1 mm, the print came out
+skewed — reprint it. You only need to enter width and height into the app; the diagonals just prove
+the card is square.
+
+### Step 4 — How to measure well
+
+- **Use a steel rule, not a tape measure.** A tape has a sliding hook at the end and sags across a
+  span — both introduce a millimetre or two. A steel rule doesn't.
+- **Read to the nearest 0.5 mm.** That's about 0.3% on a 150 mm card, which is well inside the error
+  budget. Better instruments buy you very little here.
+- **Lay the rule flat on the card**, look straight down at it. Reading at an angle introduces
+  parallax error.
+- **Measure twice.** If the two readings disagree, measure a third time.
+
+### Step 5 — Make it last
+
+- **Glue it to stiff card or foam board.** A bending target is a wrong target — a card that bows by a
+  few millimetres in the middle throws the corners out of plane.
+- **Write the measured numbers on the back**, with the date. You'll need them at every site.
+- **Re-measure if it gets damp or warped.** Paper genuinely moves with humidity — a card left in a
+  wet bag overnight is no longer the card you measured.
+- Give each card an **ID** (`SB-001`) if you make several, so you always know which numbers go with
+  which card.
+
+### No printer? Use the building
+
+You don't strictly need a printed card. Anything flat with a known size works:
+
+- A window opening or door you've measured with a tape
+- A standard brick course — measure ten courses and divide
+- A panel, sign or tile of known dimensions
+
+Same rule applies: **measure between the exact points you're going to tap.**
+
+---
+
+## 3. At the building: safety first
 
 **No photograph is worth an injury or a citation.**
 
@@ -163,10 +270,11 @@ visual records. So Plumb gives you both.
 
 ![Corner tapping order](docs/assets/04-corner-order.svg)
 
-1. Enter your target's **measured** width and height (the numbers you wrote on the back of the card).
+1. Enter your target's **measured** width and height — the numbers you wrote on the back of the card
+   in [section 2](#2-printing-and-measuring-your-target-card), not the nominal 150 × 100.
 2. Tap **Pick 4 corners**.
-3. Tap the corners of the target in the photo, **clockwise starting from top-left**:
-   top-left → top-right → bottom-right → bottom-left.
+3. Tap the **saddle points** — where black meets white — **clockwise starting from top-left**:
+   ① top-left → ② top-right → ③ bottom-right → ④ bottom-left.
 4. Tap **Solve calibration**.
 
 **Zoom in before you tap.** A few pixels of sloppiness here turns into millimetres of error later.
@@ -313,14 +421,17 @@ If you remember nothing else from this guide, remember this one.
 
 | Mistake | What happens | Fix |
 |---|---|---|
-| Trusting the printer's size | Everything is silently 1–3% wrong | Measure the printed target with a steel ruler |
-| Target held in hand, tilted | Bad calibration | Tape it flat to the wall |
+| Printing with "fit to page" | Card is 1–3% wrong, so everything is | Print at 100%, then check the 100 mm bar |
+| Typing the nominal 150 × 100 | Silently wrong by however much your printer scaled | Type your **measured** numbers |
+| Measuring to the paper edge | Wrong by ~12 mm — an 8% error | Measure saddle to saddle, black-meets-white |
+| Card held in hand, tilted | Bad calibration | Tape it flat to the wall |
+| Card bent or bowed | Corners fall out of plane | Glue it to stiff board |
 | Skipping the check | You never find out it's wrong | Always do a hold-out check |
 | Checking against your own target | Proves nothing | Use a *different* known length |
 | Measuring things that stick out | Silently wrong | See [the one big trap](#the-one-big-trap) |
 | Using zoom | Breaks calibration | Keep zoom at 1.0×, walk closer instead |
-| Target tiny in the frame | Large errors | Get closer, or use a bigger target |
-| Target at the edge of the frame | Lens distortion | Keep it near the centre |
+| Card tiny in the frame | Large errors | Get closer, or print a bigger target |
+| Card at the edge of the frame | Lens distortion | Keep it near the centre |
 | Shooting into the sun / deep shadow | Corners can't be found | Shoot with even light. Overcast is ideal |
 | Writing down a number without its ± | Not a measurement any more | Always carry the uncertainty |
 
@@ -335,21 +446,24 @@ If you remember nothing else from this guide, remember this one.
 │  PLUMB — FIELD CARD                                 │
 ├─────────────────────────────────────────────────────┤
 │  BEFORE YOU GO                                      │
-│   □ Target printed, glued to card                   │
-│   □ Target MEASURED with steel rule, written on back│
-│   □ Tape measure packed                             │
-│   □ Phone charged                                   │
+│   □ Card printed at 100% (NOT "fit to page")        │
+│   □ 100 mm check bar verified with a steel rule     │
+│   □ Width + height MEASURED saddle-to-saddle        │
+│     (where black meets white — not the paper edge)  │
+│   □ Diagonals agree within ~1 mm                    │
+│   □ Numbers written on the back, card on stiff board│
+│   □ Steel rule + tape packed, phone charged         │
 │                                                     │
 │  AT THE WALL                                        │
 │   □ Safe spot, on the sidewalk                      │
-│   □ Target FLAT on the wall you're measuring        │
+│   □ Card FLAT on the wall you're measuring          │
 │   □ Stand SQUARE ON, level bar under 3°             │
 │   □ Zoom = 1.0×, lock focus + exposure              │
 │   □ Full-res photo — with scale, then clean         │
 │                                                     │
 │  IN THE APP                                         │
-│   □ Type the MEASURED target size                   │
-│   □ Tap corners: TL → TR → BR → BL (zoom in first)  │
+│   □ Type the MEASURED size, not 150 × 100           │
+│   □ Tap saddles: ①TL → ②TR → ③BR → ④BL (zoom first) │
 │   □ Solve calibration                               │
 │   □ HOLD-OUT CHECK ⇒ must say VERIFIED              │
 │   □ Measure. Keep the ± with every number           │
@@ -368,7 +482,9 @@ If you remember nothing else from this guide, remember this one.
 | Term | Plain English |
 |---|---|
 | **Calibration** | Telling Plumb how big things really are, using something of known size |
-| **Target / scale bar** | The printed pattern you put in the photo so it can be measured |
+| **Target / calibration card** | The printed pattern you put in the photo so it can be measured |
+| **Saddle point** | The point where the black and white squares touch. The most precisely locatable mark you can print — it's what you tap and what you measure between |
+| **Nominal vs measured** | *Nominal* is the size the card was designed to be (150 × 100 mm). *Measured* is what actually came out of your printer. Always use measured |
 | **Hold-out check** | Measuring something you already know, to prove the calibration works |
 | **Plane** | The flat surface you're measuring — usually a wall face |
 | **Off-plane** | Anything sticking out from that surface. Measured less accurately |

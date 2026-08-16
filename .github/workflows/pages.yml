@@ -50,9 +50,11 @@ jobs:
           cp -r prototype/* _site/
           # Field guide and diagrams travel with the app so a volunteer can
           # reach them from the phone standing in front of the building.
-          mkdir -p _site/guide/docs
+          mkdir -p _site/guide/docs _site/targets
           cp HOW-TO-PLUMB.md _site/guide/
           cp -r docs/assets _site/guide/docs/assets
+          # Printable calibration cards, reachable directly from the app.
+          cp docs/assets/target-a4.svg docs/assets/target-letter.svg _site/targets/
           # Pages would otherwise run Jekyll and strip files beginning with _.
           touch _site/.nojekyll
 

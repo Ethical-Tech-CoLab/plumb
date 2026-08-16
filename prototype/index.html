@@ -139,9 +139,9 @@
 
         <div id="cal3Box">
           <p class="hint">
-            Click the <b>4 corners</b> of a rectangle whose real size you have <b>measured</b>
-            (a printed target, a window opening, a panel). Order: top-left, top-right,
-            bottom-right, bottom-left.
+            Click the <b>4 corners</b> of a rectangle whose real size you have <b>measured</b> — the
+            saddle points where black meets white on a Plumb card, or the corners of a window or
+            panel you measured with a tape. Order: top-left, top-right, bottom-right, bottom-left.
           </p>
           <div class="grid2">
             <label>Width (mm)<input id="rectW" type="number" value="600" step="0.1"></label>
@@ -150,9 +150,15 @@
           <label>Target tolerance (mm)
             <input id="targetTol" type="number" value="0.5" step="0.1">
           </label>
-          <p class="warn">
+          <p class="hint">
             Type the size you <b>measured with a steel rule</b>, not the size you asked the printer
             for. Home printers scale.
+          </p>
+          <p class="hint">
+            No card yet? Print one:
+            <a href="targets/target-a4.svg" target="_blank" rel="noopener">A4</a> ·
+            <a href="targets/target-letter.svg" target="_blank" rel="noopener">US&nbsp;Letter</a>
+            — then measure it. <a href="guide/HOW-TO-PLUMB.md" target="_blank" rel="noopener">How&nbsp;to</a>
           </p>
           <div class="btn-row">
             <button id="btnPickTarget" class="btn">Pick 4 corners</button>

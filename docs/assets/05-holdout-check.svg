@@ -11,12 +11,18 @@
     <line x1="60" y1="225" x2="700" y2="225"/><line x1="60" y1="255" x2="700" y2="255"/>
   </g>
 
-  <!-- calibration target -->
+  <!-- calibration target: same checkerboard-corner card as the printable sheet -->
   <rect x="110" y="140" width="105" height="70" fill="#fff" stroke="#1a71c1" stroke-width="3"/>
-  <rect x="118" y="148" width="22" height="22" fill="#1a1f26"/>
-  <rect x="185" y="180" width="22" height="22" fill="#1a1f26"/>
-  <circle cx="110" cy="140" r="6" fill="#1a71c1"/><circle cx="215" cy="140" r="6" fill="#1a71c1"/>
-  <circle cx="215" cy="210" r="6" fill="#1a71c1"/><circle cx="110" cy="210" r="6" fill="#1a71c1"/>
+  <g fill="#1a1f26">
+    <rect x="110" y="140" width="16" height="16"/><rect x="126" y="156" width="16" height="16"/>
+    <rect x="199" y="140" width="16" height="16"/><rect x="183" y="156" width="16" height="16"/>
+    <rect x="110" y="194" width="16" height="16"/><rect x="126" y="178" width="16" height="16"/>
+    <rect x="199" y="194" width="16" height="16"/><rect x="183" y="178" width="16" height="16"/>
+  </g>
+  <g fill="none" stroke="#1a71c1" stroke-width="2.5">
+    <circle cx="126" cy="156" r="7"/><circle cx="199" cy="156" r="7"/>
+    <circle cx="199" cy="194" r="7"/><circle cx="126" cy="194" r="7"/>
+  </g>
   <text x="162" y="232" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" font-weight="700" fill="#1a71c1">STEP A — calibrate</text>
   <text x="162" y="249" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#495057">Tap these 4 corners.</text>
   <text x="162" y="264" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#495057">Plumb now knows the scale.</text>

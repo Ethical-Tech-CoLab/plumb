@@ -10,8 +10,14 @@
       <line x1="30" y1="140" x2="230" y2="140"/><line x1="30" y1="170" x2="230" y2="170"/>
     </g>
     <rect x="95" y="105" width="66" height="44" fill="#fff" stroke="#1a1f26" stroke-width="2"/>
-    <rect x="101" y="111" width="14" height="14" fill="#1a1f26"/>
-    <rect x="141" y="129" width="14" height="14" fill="#1a1f26"/>
+    <rect x="95" y="105" width="11" height="11" fill="#1a1f26"/>
+    <rect x="106" y="116" width="11" height="11" fill="#1a1f26"/>
+    <rect x="150" y="105" width="11" height="11" fill="#1a1f26"/>
+    <rect x="139" y="116" width="11" height="11" fill="#1a1f26"/>
+    <rect x="95" y="138" width="11" height="11" fill="#1a1f26"/>
+    <rect x="106" y="127" width="11" height="11" fill="#1a1f26"/>
+    <rect x="150" y="138" width="11" height="11" fill="#1a1f26"/>
+    <rect x="139" y="127" width="11" height="11" fill="#1a1f26"/>
     <text x="130" y="222" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#2f9e44">✓ GOOD</text>
     <text x="130" y="240" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#495057">Square on, sharp, target flat</text>
     <text x="130" y="255" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#495057">and clearly readable, wall fills</text>

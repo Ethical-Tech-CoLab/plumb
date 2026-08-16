@@ -1,0 +1,196 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="215.9mm" height="279.4mm" viewBox="0 0 215.9 279.4"
+     role="img" aria-label="Plumb calibration target, US Letter. A 150 by 100 millimetre rectangle defined by four checkerboard corner markers, with measurement instructions and boxes to write the measured dimensions.">
+  <!--
+    PLUMB CALIBRATION TARGET — US Letter (215.9 x 279.4 mm)
+
+    Drawn in millimetres: 1 SVG user unit = 1 mm. Printed at 100% scale, every
+    dimension is true. Identical target geometry to the A4 sheet — only the page
+    layout differs — so the two are interchangeable in the field.
+
+    Corner markers are CHECKERBOARD SADDLE POINTS: the point where black meets
+    white. That is the point you tap in the app, and therefore the point you
+    must measure between.
+
+    Nominal saddle-to-saddle: 150.0 mm wide x 100.0 mm tall.
+    NOMINAL IS NOT MEASURED. Print it, measure it, write it down, type that.
+  -->
+
+  <rect width="215.9" height="279.4" fill="#ffffff"/>
+
+  <!-- ============================== TITLE ============================== -->
+  <text x="107.95" y="15" text-anchor="middle" font-family="Helvetica,Arial,sans-serif"
+        font-size="7" font-weight="bold" fill="#000">PLUMB CALIBRATION TARGET</text>
+  <text x="107.95" y="21" text-anchor="middle" font-family="Helvetica,Arial,sans-serif"
+        font-size="3.4" fill="#333">ethical-tech-colab.github.io/plumb &#183; US Letter</text>
+
+  <!-- ===================== PRINT SETTINGS WARNING ===================== -->
+  <rect x="18" y="25" width="180" height="14" fill="#fff4f4" stroke="#c92a2a" stroke-width="0.5"/>
+  <text x="23" y="31" font-family="Helvetica,Arial,sans-serif" font-size="3.6" font-weight="bold" fill="#c92a2a">
+    PRINT AT 100% / "ACTUAL SIZE". Turn OFF "Fit to page" and "Shrink to fit".
+  </text>
+  <text x="23" y="36" font-family="Helvetica,Arial,sans-serif" font-size="3.2" fill="#333">
+    Then check the 100 mm bar at the bottom of this page before you use the card.
+  </text>
+
+  <!-- ============================== TARGET ============================= -->
+  <!-- Saddle points at (33,68) (183,68) (183,168) (33,168) = 150 x 100 mm -->
+
+  <rect x="33" y="68" width="150" height="100" fill="none" stroke="#c9d4e0" stroke-width="0.3" stroke-dasharray="2 2"/>
+
+  <!-- corner 1: top-left, saddle at (33,68) -->
+  <g>
+    <rect x="21" y="56" width="12" height="12" fill="#000"/>
+    <rect x="33" y="68" width="12" height="12" fill="#000"/>
+    <rect x="33" y="56" width="12" height="12" fill="#fff" stroke="#000" stroke-width="0.2"/>
+    <rect x="21" y="68" width="12" height="12" fill="#fff" stroke="#000" stroke-width="0.2"/>
+  </g>
+  <!-- corner 2: top-right, saddle at (183,68) -->
+  <g>
+    <rect x="171" y="56" width="12" height="12" fill="#000"/>
+    <rect x="183" y="68" width="12" height="12" fill="#000"/>
+    <rect x="183" y="56" width="12" height="12" fill="#fff" stroke="#000" stroke-width="0.2"/>
+    <rect x="171" y="68" width="12" height="12" fill="#fff" stroke="#000" stroke-width="0.2"/>
+  </g>
+  <!-- corner 3: bottom-right, saddle at (183,168) -->
+  <g>
+    <rect x="171" y="156" width="12" height="12" fill="#000"/>
+    <rect x="183" y="168" width="12" height="12" fill="#000"/>
+    <rect x="183" y="156" width="12" height="12" fill="#fff" stroke="#000" stroke-width="0.2"/>
+    <rect x="171" y="168" width="12" height="12" fill="#fff" stroke="#000" stroke-width="0.2"/>
+  </g>
+  <!-- corner 4: bottom-left, saddle at (33,168) -->
+  <g>
+    <rect x="21" y="156" width="12" height="12" fill="#000"/>
+    <rect x="33" y="168" width="12" height="12" fill="#000"/>
+    <rect x="33" y="156" width="12" height="12" fill="#fff" stroke="#000" stroke-width="0.2"/>
+    <rect x="21" y="168" width="12" height="12" fill="#fff" stroke="#000" stroke-width="0.2"/>
+  </g>
+
+  <!-- tap-order numbers, matching the app: TL, TR, BR, BL -->
+  <g font-family="Helvetica,Arial,sans-serif" font-size="4.5" font-weight="bold" fill="#c92a2a">
+    <text x="49" y="65" text-anchor="middle">1</text>
+    <text x="167" y="65" text-anchor="middle">2</text>
+    <text x="167" y="175" text-anchor="middle">3</text>
+    <text x="49" y="175" text-anchor="middle">4</text>
+  </g>
+
+  <!-- WIDTH dimension, between the saddle points -->
+  <g stroke="#0b7285" stroke-width="0.4" fill="#0b7285">
+    <line x1="33" y1="93" x2="183" y2="93"/>
+    <polygon points="33,93 37,91.6 37,94.4"/>
+    <polygon points="183,93 179,91.6 179,94.4"/>
+    <line x1="33" y1="68" x2="33" y2="93" stroke-dasharray="1.5 1.5" stroke-width="0.25"/>
+    <line x1="183" y1="68" x2="183" y2="93" stroke-dasharray="1.5 1.5" stroke-width="0.25"/>
+  </g>
+  <rect x="79" y="87.5" width="58" height="11" fill="#fff" opacity="0.92"/>
+  <text x="108" y="91.6" text-anchor="middle" font-family="Helvetica,Arial,sans-serif"
+        font-size="3.6" font-weight="bold" fill="#0b7285">WIDTH — measure this</text>
+  <text x="108" y="96.4" text-anchor="middle" font-family="Helvetica,Arial,sans-serif"
+        font-size="3.2" fill="#0b7285">nominal 150.0 mm</text>
+
+  <!-- HEIGHT dimension -->
+  <g stroke="#0b7285" stroke-width="0.4" fill="#0b7285">
+    <line x1="108" y1="68" x2="108" y2="168"/>
+    <polygon points="108,68 106.6,72 109.4,72"/>
+    <polygon points="108,168 106.6,164 109.4,164"/>
+    <line x1="33" y1="68" x2="108" y2="68" stroke-dasharray="1.5 1.5" stroke-width="0.25"/>
+    <line x1="33" y1="168" x2="108" y2="168" stroke-dasharray="1.5 1.5" stroke-width="0.25"/>
+  </g>
+  <rect x="91" y="112" width="34" height="11" fill="#fff" opacity="0.92"/>
+  <text x="108" y="116.2" text-anchor="middle" font-family="Helvetica,Arial,sans-serif"
+        font-size="3.6" font-weight="bold" fill="#0b7285">HEIGHT</text>
+  <text x="108" y="121" text-anchor="middle" font-family="Helvetica,Arial,sans-serif"
+        font-size="3.2" fill="#0b7285">nominal 100.0 mm</text>
+
+  <!-- the key instruction, on the card itself -->
+  <text x="108" y="139" text-anchor="middle" font-family="Helvetica,Arial,sans-serif"
+        font-size="3.8" font-weight="bold" fill="#000">
+    Measure between the points where black meets white —
+  </text>
+  <text x="108" y="144" text-anchor="middle" font-family="Helvetica,Arial,sans-serif"
+        font-size="3.8" font-weight="bold" fill="#000">
+    the exact same points you tap in the app.
+  </text>
+  <text x="108" y="150" text-anchor="middle" font-family="Helvetica,Arial,sans-serif"
+        font-size="3.2" fill="#666">
+    Not the paper edge. Not the outside of the black squares.
+  </text>
+
+  <!-- ===================== WRITE-IN RECORD BLOCK ===================== -->
+  <rect x="18" y="186" width="180" height="44" fill="#f7f9fb" stroke="#333" stroke-width="0.5"/>
+  <text x="23" y="193" font-family="Helvetica,Arial,sans-serif" font-size="4" font-weight="bold" fill="#000">
+    MEASURED DIMENSIONS — fill this in with a steel rule, then type these into Plumb
+  </text>
+
+  <g font-family="Helvetica,Arial,sans-serif" font-size="3.4" fill="#333">
+    <text x="23" y="202">WIDTH  (1&#8594;2)</text>
+    <rect x="55" y="197.5" width="38" height="7" fill="#fff" stroke="#888" stroke-width="0.3"/>
+    <text x="95" y="202">mm</text>
+
+    <text x="113" y="202">HEIGHT (1&#8594;4)</text>
+    <rect x="145" y="197.5" width="38" height="7" fill="#fff" stroke="#888" stroke-width="0.3"/>
+    <text x="185" y="202">mm</text>
+
+    <text x="23" y="213">DIAGONAL (1&#8594;3)</text>
+    <rect x="55" y="208.5" width="38" height="7" fill="#fff" stroke="#888" stroke-width="0.3"/>
+    <text x="95" y="213">mm</text>
+
+    <text x="113" y="213">DIAGONAL (2&#8594;4)</text>
+    <rect x="145" y="208.5" width="38" height="7" fill="#fff" stroke="#888" stroke-width="0.3"/>
+    <text x="185" y="213">mm</text>
+
+    <text x="23" y="224">CARD ID</text>
+    <rect x="55" y="219.5" width="38" height="7" fill="#fff" stroke="#888" stroke-width="0.3"/>
+    <text x="113" y="224">DATE MEASURED</text>
+    <rect x="145" y="219.5" width="38" height="7" fill="#fff" stroke="#888" stroke-width="0.3"/>
+  </g>
+
+  <text x="107.95" y="235" text-anchor="middle" font-family="Helvetica,Arial,sans-serif"
+        font-size="3" fill="#666">
+    The two diagonals should agree within about 1 mm. If they don't, the print is skewed — print it again.
+  </text>
+
+  <!-- ================== PRINT-SCALE VERIFICATION BAR ================== -->
+  <text x="18" y="245" font-family="Helvetica,Arial,sans-serif" font-size="3.6" font-weight="bold" fill="#000">
+    CHECK YOUR PRINT: this bar is exactly 100 mm end to end.
+  </text>
+
+  <g stroke="#000" stroke-width="0.4">
+    <line x1="18" y1="253" x2="118" y2="253"/>
+    <line x1="18"  y1="249.5" x2="18"  y2="256.5"/>
+    <line x1="28"  y1="251"   x2="28"  y2="255"/>
+    <line x1="38"  y1="251"   x2="38"  y2="255"/>
+    <line x1="48"  y1="251"   x2="48"  y2="255"/>
+    <line x1="58"  y1="251"   x2="58"  y2="255"/>
+    <line x1="68"  y1="249.5" x2="68"  y2="256.5"/>
+    <line x1="78"  y1="251"   x2="78"  y2="255"/>
+    <line x1="88"  y1="251"   x2="88"  y2="255"/>
+    <line x1="98"  y1="251"   x2="98"  y2="255"/>
+    <line x1="108" y1="251"   x2="108" y2="255"/>
+    <line x1="118" y1="249.5" x2="118" y2="256.5"/>
+  </g>
+  <g font-family="Helvetica,Arial,sans-serif" font-size="2.8" fill="#000" text-anchor="middle">
+    <text x="18" y="260.5">0</text>
+    <text x="68" y="260.5">50</text>
+    <text x="118" y="260.5">100 mm</text>
+  </g>
+
+  <text x="128" y="251" font-family="Helvetica,Arial,sans-serif" font-size="3.2" fill="#333">
+    Reads 100 mm? Good.
+  </text>
+  <text x="128" y="256" font-family="Helvetica,Arial,sans-serif" font-size="3.2" fill="#333">
+    Reads anything else? Your printer scaled it —
+  </text>
+  <text x="128" y="261" font-family="Helvetica,Arial,sans-serif" font-size="3.2" fill="#333">
+    that is fine, just use your MEASURED numbers.
+  </text>
+
+  <!-- ============================== FOOTER ============================= -->
+  <text x="18" y="270" font-family="Helvetica,Arial,sans-serif" font-size="2.8" fill="#666">
+    Glue to stiff card or foam board so it cannot bend. Re-measure if it gets damp or warped — paper moves.
+  </text>
+  <text x="18" y="274.5" font-family="Helvetica,Arial,sans-serif" font-size="2.8" fill="#666">
+    Plumb calibration target Letter v1 &#183; Ethical Tech CoLab &#183; CC BY 4.0 &#183; nominal 150.0 x 100.0 mm saddle-to-saddle
+  </text>
+</svg>

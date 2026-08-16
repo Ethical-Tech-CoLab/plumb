@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 560" width="760" height="560" role="img" aria-label="Diagram showing exactly which two points to measure between on the calibration card: the checkerboard saddle points where black meets white, which are the same points tapped in the app.">
+  <rect width="760" height="560" fill="#f8f9fb"/>
+
+  <text x="380" y="30" text-anchor="middle" font-family="system-ui,sans-serif" font-size="18" font-weight="700" fill="#1a1f26">What exactly do I measure?</text>
+  <text x="380" y="52" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#495057">Measure between the points where black meets white — the <tspan font-weight="700">same points you tap in the app</tspan>.</text>
+
+  <!-- ===================== the card ===================== -->
+  <rect x="120" y="80" width="520" height="330" fill="#ffffff" stroke="#adb5bd" stroke-width="2"/>
+  <text x="132" y="98" font-family="system-ui,sans-serif" font-size="11" fill="#adb5bd">printed card / paper edge</text>
+
+  <!-- corner checkerboards. saddles at (200,160) (560,160) (560,340) (200,340) -->
+  <g>
+    <!-- TL -->
+    <rect x="160" y="120" width="40" height="40" fill="#1a1f26"/>
+    <rect x="200" y="160" width="40" height="40" fill="#1a1f26"/>
+    <rect x="200" y="120" width="40" height="40" fill="#fff" stroke="#1a1f26" stroke-width="1"/>
+    <rect x="160" y="160" width="40" height="40" fill="#fff" stroke="#1a1f26" stroke-width="1"/>
+    <!-- TR -->
+    <rect x="520" y="120" width="40" height="40" fill="#1a1f26"/>
+    <rect x="560" y="160" width="40" height="40" fill="#1a1f26"/>
+    <rect x="560" y="120" width="40" height="40" fill="#fff" stroke="#1a1f26" stroke-width="1"/>
+    <rect x="520" y="160" width="40" height="40" fill="#fff" stroke="#1a1f26" stroke-width="1"/>
+    <!-- BR -->
+    <rect x="520" y="300" width="40" height="40" fill="#1a1f26"/>
+    <rect x="560" y="340" width="40" height="40" fill="#1a1f26"/>
+    <rect x="560" y="300" width="40" height="40" fill="#fff" stroke="#1a1f26" stroke-width="1"/>
+    <rect x="520" y="340" width="40" height="40" fill="#fff" stroke="#1a1f26" stroke-width="1"/>
+    <!-- BL -->
+    <rect x="160" y="300" width="40" height="40" fill="#1a1f26"/>
+    <rect x="200" y="340" width="40" height="40" fill="#1a1f26"/>
+    <rect x="200" y="300" width="40" height="40" fill="#fff" stroke="#1a1f26" stroke-width="1"/>
+    <rect x="160" y="340" width="40" height="40" fill="#fff" stroke="#1a1f26" stroke-width="1"/>
+  </g>
+
+  <!-- tap-order numbers -->
+  <g font-family="system-ui,sans-serif" font-size="15" font-weight="700" fill="#d6336c">
+    <text x="248" y="146" text-anchor="middle">1</text>
+    <text x="512" y="146" text-anchor="middle">2</text>
+    <text x="512" y="368" text-anchor="middle">3</text>
+    <text x="248" y="368" text-anchor="middle">4</text>
+  </g>
+
+  <!-- WIDTH -->
+  <g stroke="#0b7285" stroke-width="2.5" fill="#0b7285">
+    <line x1="200" y1="240" x2="560" y2="240"/>
+    <polygon points="200,240 213,235 213,245"/>
+    <polygon points="560,240 547,235 547,245"/>
+    <line x1="200" y1="160" x2="200" y2="240" stroke-width="1" stroke-dasharray="4 3"/>
+    <line x1="560" y1="160" x2="560" y2="240" stroke-width="1" stroke-dasharray="4 3"/>
+  </g>
+  <rect x="288" y="226" width="184" height="28" fill="#f8f9fb"/>
+  <text x="380" y="245" text-anchor="middle" font-family="system-ui,sans-serif" font-size="14" font-weight="700" fill="#0b7285">WIDTH — point 1 to point 2</text>
+
+  <!-- HEIGHT -->
+  <g stroke="#0b7285" stroke-width="2.5" fill="#0b7285">
+    <line x1="380" y1="160" x2="380" y2="340"/>
+    <polygon points="380,160 375,173 385,173"/>
+    <polygon points="380,340 375,327 385,327"/>
+    <line x1="200" y1="160" x2="380" y2="160" stroke-width="1" stroke-dasharray="4 3"/>
+    <line x1="200" y1="340" x2="380" y2="340" stroke-width="1" stroke-dasharray="4 3"/>
+  </g>
+  <rect x="316" y="278" width="128" height="24" fill="#f8f9fb"/>
+  <text x="380" y="295" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#0b7285">HEIGHT — 1 to 4</text>
+
+  <!-- saddle callout -->
+  <circle cx="200" cy="160" r="15" fill="none" stroke="#2f9e44" stroke-width="3"/>
+  <line x1="212" y1="150" x2="290" y2="100" stroke="#2f9e44" stroke-width="2"/>
+  <rect x="286" y="76" width="230" height="30" rx="5" fill="#ebfbee" stroke="#2f9e44" stroke-width="1.5"/>
+  <text x="401" y="96" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12.5" font-weight="700" fill="#2f9e44">measure from HERE — where the corners touch</text>
+
+  <!-- ===================== zoom detail ===================== -->
+  <text x="380" y="440" text-anchor="middle" font-family="system-ui,sans-serif" font-size="14" font-weight="700" fill="#1a1f26">Close up on one corner</text>
+
+  <!-- correct -->
+  <g transform="translate(150,455)">
+    <rect x="0" y="0" width="45" height="45" fill="#1a1f26"/>
+    <rect x="45" y="45" width="45" height="45" fill="#1a1f26"/>
+    <rect x="45" y="0" width="45" height="45" fill="#fff" stroke="#1a1f26" stroke-width="1"/>
+    <rect x="0" y="45" width="45" height="45" fill="#fff" stroke="#1a1f26" stroke-width="1"/>
+    <circle cx="45" cy="45" r="8" fill="none" stroke="#2f9e44" stroke-width="3.5"/>
+    <text x="45" y="-8" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12.5" font-weight="700" fill="#2f9e44">✓ YES</text>
+    <text x="45" y="106" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11.5" fill="#495057">the exact meeting point</text>
+  </g>
+
+  <!-- wrong: outer corner -->
+  <g transform="translate(340,455)">
+    <rect x="0" y="0" width="45" height="45" fill="#1a1f26"/>
+    <rect x="45" y="45" width="45" height="45" fill="#1a1f26"/>
+    <rect x="45" y="0" width="45" height="45" fill="#fff" stroke="#1a1f26" stroke-width="1"/>
+    <rect x="0" y="45" width="45" height="45" fill="#fff" stroke="#1a1f26" stroke-width="1"/>
+    <circle cx="0" cy="0" r="8" fill="none" stroke="#d6336c" stroke-width="3.5"/>
+    <text x="45" y="-8" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12.5" font-weight="700" fill="#d6336c">✕ NO</text>
+    <text x="45" y="106" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11.5" fill="#495057">outside of the black square</text>
+  </g>
+
+  <!-- wrong: paper edge -->
+  <g transform="translate(530,455)">
+    <rect x="-22" y="-14" width="134" height="118" fill="none" stroke="#adb5bd" stroke-width="2"/>
+    <rect x="0" y="0" width="45" height="45" fill="#1a1f26"/>
+    <rect x="45" y="45" width="45" height="45" fill="#1a1f26"/>
+    <rect x="45" y="0" width="45" height="45" fill="#fff" stroke="#1a1f26" stroke-width="1"/>
+    <rect x="0" y="45" width="45" height="45" fill="#fff" stroke="#1a1f26" stroke-width="1"/>
+    <circle cx="-22" cy="-14" r="8" fill="none" stroke="#d6336c" stroke-width="3.5"/>
+    <text x="45" y="-24" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12.5" font-weight="700" fill="#d6336c">✕ NO</text>
+    <text x="45" y="120" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11.5" fill="#495057">the paper edge</text>
+  </g>
+</svg>

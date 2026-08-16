@@ -20,13 +20,17 @@
   <rect x="70" y="42" width="620" height="16" fill="#c99b73" stroke="#8a5a3b" stroke-width="1.5"/>
   <text x="128" y="38" font-family="system-ui,sans-serif" font-size="11" fill="#8a5a3b">cornice — sticks out, NOT on this plane</text>
 
-  <!-- GOOD target -->
+  <!-- GOOD target: same checkerboard-corner card as the printable sheet -->
   <g>
     <rect x="150" y="185" width="90" height="60" fill="#fff" stroke="#2f9e44" stroke-width="3"/>
-    <rect x="158" y="193" width="20" height="20" fill="#1a1f26"/>
-    <rect x="212" y="217" width="20" height="20" fill="#1a1f26"/>
-    <rect x="212" y="193" width="20" height="20" fill="#adb5bd"/>
-    <rect x="158" y="217" width="20" height="20" fill="#adb5bd"/>
+    <rect x="150" y="185" width="15" height="15" fill="#1a1f26"/>
+    <rect x="165" y="200" width="15" height="15" fill="#1a1f26"/>
+    <rect x="225" y="185" width="15" height="15" fill="#1a1f26"/>
+    <rect x="210" y="200" width="15" height="15" fill="#1a1f26"/>
+    <rect x="150" y="230" width="15" height="15" fill="#1a1f26"/>
+    <rect x="165" y="215" width="15" height="15" fill="#1a1f26"/>
+    <rect x="225" y="230" width="15" height="15" fill="#1a1f26"/>
+    <rect x="210" y="215" width="15" height="15" fill="#1a1f26"/>
     <circle cx="130" cy="215" r="12" fill="#2f9e44"/>
     <text x="130" y="220" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#fff">✓</text>
   </g>
