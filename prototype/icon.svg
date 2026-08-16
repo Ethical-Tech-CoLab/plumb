@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Plumb icon: a plumb bob hanging on a line over a measurement grid.">
+  <rect width="512" height="512" rx="96" fill="#0d1117"/>
+
+  <!-- metric grid, converging slightly to suggest perspective -->
+  <g stroke="#00e5ff" stroke-opacity="0.20" stroke-width="3">
+    <line x1="96" y1="128" x2="416" y2="128"/>
+    <line x1="92" y1="200" x2="420" y2="200"/>
+    <line x1="88" y1="272" x2="424" y2="272"/>
+    <line x1="84" y1="344" x2="428" y2="344"/>
+    <line x1="140" y1="96" x2="132" y2="416"/>
+    <line x1="212" y1="96" x2="208" y2="416"/>
+    <line x1="300" y1="96" x2="304" y2="416"/>
+    <line x1="372" y1="96" x2="380" y2="416"/>
+  </g>
+
+  <!-- suspension point -->
+  <circle cx="256" cy="92" r="12" fill="#00e5ff"/>
+
+  <!-- plumb line: the reference that is true by definition -->
+  <line x1="256" y1="92" x2="256" y2="300" stroke="#00e5ff" stroke-width="7" stroke-linecap="round"/>
+
+  <!-- plumb bob -->
+  <path d="M256 300 L300 348 L256 452 L212 348 Z" fill="#00e5ff"/>
+  <path d="M256 300 L300 348 L256 452 Z" fill="#00b8cc"/>
+
+  <!-- tick marks: this line is also a scale -->
+  <g stroke="#f8f9fb" stroke-width="6" stroke-linecap="round">
+    <line x1="232" y1="148" x2="256" y2="148"/>
+    <line x1="238" y1="196" x2="256" y2="196"/>
+    <line x1="232" y1="244" x2="256" y2="244"/>
+  </g>
+</svg>

@@ -1,0 +1,9 @@
+# Optional extras, installed only when the corresponding backend is used.
+# Kept out of requirements.txt so the base image stays small and quick to build.
+
+# Azure Blob storage backend (PLUMB_STORAGE=azure_blob)
+azure-storage-blob==12.24.0
+
+# Test tooling
+pytest==8.3.4
+httpx==0.28.1

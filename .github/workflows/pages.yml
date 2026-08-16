@@ -1,0 +1,73 @@
+name: Deploy Plumb client to GitHub Pages
+
+# The Plumb field client is a static, dependency-free PWA. Publishing it to
+# Pages gives contributors an HTTPS origin, which the camera APIs require —
+# getUserMedia and DeviceOrientation will not run over plain HTTP.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'prototype/**'
+      - 'HOW-TO-PLUMB.md'
+      - 'docs/assets/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never cancel a running deploy; just queue behind it.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  test:
+    name: Geometry tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      # The metrology core is the part that must not ship broken.
+      - name: Run metrology unit tests
+        run: node --test prototype/test/geometry.test.mjs
+
+  build:
+    name: Build site
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Assemble site
+        run: |
+          mkdir -p _site
+          cp -r prototype/* _site/
+          # Field guide and diagrams travel with the app so a volunteer can
+          # reach them from the phone standing in front of the building.
+          mkdir -p _site/guide/docs
+          cp HOW-TO-PLUMB.md _site/guide/
+          cp -r docs/assets _site/guide/docs/assets
+          # Pages would otherwise run Jekyll and strip files beginning with _.
+          touch _site/.nojekyll
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

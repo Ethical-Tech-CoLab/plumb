@@ -1,0 +1,12 @@
+MediaDevices getUserMedia advanced constraints focusDistance zoom torch browser camera control
+ImageCapture API takePhoto browser photoSettings support Safari iOS
+MediaStreamTrack getCapabilities focalLength browser camera intrinsics
+Safari iOS getUserMedia limitations camera resolution PWA capture
+WebXR Device API iOS Safari support status 2025 Variant Launch
+Origin Private File System OPFS storage limits browser large files
+piexifjs exifr javascript read write EXIF metadata in browser
+Web Bluetooth laser distance meter Leica Disto browser javascript
+DeviceOrientation API absolute compass heading iOS webkitCompassHeading accuracy
+Geolocation API accuracy browser GPS smartphone meters
+input capture camera HTML file upload EXIF preserved iOS Android
+WebGPU WebAssembly structure from motion in browser performance

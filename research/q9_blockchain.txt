@@ -1,0 +1,11 @@
+Base blockchain L2 Coinbase transaction cost identity attestation
+Ethereum Attestation Service EAS Base onchain attestation schema
+blockchain timestamping proof of existence OpenTimestamps Bitcoin merkle
+C2PA blockchain trust anchor decentralized identity DID compatibility
+decentralized identifiers DID method did:pkh did:ethr W3C verifiable credentials
+Numbers Protocol blockchain photo provenance C2PA integration
+blockchain photo provenance heritage archive permanence critique
+blockchain notarization legal admissibility evidence court timestamp
+RFC 3161 trusted timestamp authority cost free TSA services
+long term signature validation archival LTV timestamp renewal PAdES
+key revocation blockchain vs certificate authority CRL OCSP tradeoffs

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 390" width="760" height="390" role="img" aria-label="Diagram explaining the hold-out check: the target is used to calibrate, and a separate known length is used to test the result.">
+  <rect width="760" height="390" fill="#f8f9fb"/>
+  <text x="380" y="30" text-anchor="middle" font-family="system-ui,sans-serif" font-size="17" font-weight="700" fill="#1a1f26">The hold-out check — the step nobody should skip</text>
+  <text x="380" y="52" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12.5" fill="#495057">Measure something you already know the size of, but did <tspan font-weight="700">not</tspan> use to calibrate.</text>
+
+  <!-- facade -->
+  <rect x="60" y="75" width="640" height="215" fill="#e9d8c4" stroke="#b08968" stroke-width="2"/>
+  <g stroke="#d0b89c" stroke-width="1">
+    <line x1="60" y1="105" x2="700" y2="105"/><line x1="60" y1="135" x2="700" y2="135"/>
+    <line x1="60" y1="165" x2="700" y2="165"/><line x1="60" y1="195" x2="700" y2="195"/>
+    <line x1="60" y1="225" x2="700" y2="225"/><line x1="60" y1="255" x2="700" y2="255"/>
+  </g>
+
+  <!-- calibration target -->
+  <rect x="110" y="140" width="105" height="70" fill="#fff" stroke="#1a71c1" stroke-width="3"/>
+  <rect x="118" y="148" width="22" height="22" fill="#1a1f26"/>
+  <rect x="185" y="180" width="22" height="22" fill="#1a1f26"/>
+  <circle cx="110" cy="140" r="6" fill="#1a71c1"/><circle cx="215" cy="140" r="6" fill="#1a71c1"/>
+  <circle cx="215" cy="210" r="6" fill="#1a71c1"/><circle cx="110" cy="210" r="6" fill="#1a71c1"/>
+  <text x="162" y="232" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" font-weight="700" fill="#1a71c1">STEP A — calibrate</text>
+  <text x="162" y="249" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#495057">Tap these 4 corners.</text>
+  <text x="162" y="264" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#495057">Plumb now knows the scale.</text>
+
+  <!-- window used as check -->
+  <rect x="430" y="115" width="150" height="120" fill="#5c7cfa" opacity="0.3" stroke="#2f9e44" stroke-width="3"/>
+  <line x1="430" y1="100" x2="580" y2="100" stroke="#2f9e44" stroke-width="2.5"/>
+  <line x1="430" y1="94" x2="430" y2="106" stroke="#2f9e44" stroke-width="2.5"/>
+  <line x1="580" y1="94" x2="580" y2="106" stroke="#2f9e44" stroke-width="2.5"/>
+  <text x="505" y="89" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" font-weight="700" fill="#2f9e44">you measured this with a tape: 1220 mm</text>
+  <text x="505" y="257" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" font-weight="700" fill="#2f9e44">STEP B — check</text>
+  <text x="505" y="274" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#495057">Measure it in Plumb. Does it agree?</text>
+
+  <!-- results -->
+  <rect x="60" y="305" width="320" height="70" rx="8" fill="#ebfbee" stroke="#2f9e44" stroke-width="2"/>
+  <text x="78" y="330" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#2f9e44">✓ VERIFIED — reads 1223 mm (0.25% off)</text>
+  <text x="78" y="350" font-family="system-ui,sans-serif" font-size="11.5" fill="#495057">Within tolerance. Your measurements are</text>
+  <text x="78" y="366" font-family="system-ui,sans-serif" font-size="11.5" fill="#495057">trustworthy. Carry on.</text>
+
+  <rect x="400" y="305" width="300" height="70" rx="8" fill="#fff0f3" stroke="#d6336c" stroke-width="2"/>
+  <text x="418" y="330" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#d6336c">✕ FAILED — reads 1150 mm (5.7% off)</text>
+  <text x="418" y="350" font-family="system-ui,sans-serif" font-size="11.5" fill="#495057">Something is wrong. Plumb blocks</text>
+  <text x="418" y="366" font-family="system-ui,sans-serif" font-size="11.5" fill="#495057">measuring until you redo it.</text>
+</svg>

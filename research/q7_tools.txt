@@ -1,0 +1,12 @@
+AR.js marker based web AR javascript open source hiro pattern
+ImageJ Fiji set scale measure distance image known reference
+browser web app perspective rectification measure photo free tool
+open source PWA offline field data collection photos IndexedDB sync
+QField ODK Collect Fulcrum field data collection photos GPS open source
+gaussian splatting browser viewer open source measurement
+OpenSfM OpenMVG WebAssembly structure from motion browser port
+smartphone photogrammetry facade accuracy millimeter centimeter study building
+StreetView imagery photogrammetry building facade measurement research accuracy
+IIIF image standard deep zoom annotation cultural heritage
+OpenSeadragon annotation measurement overlay image viewer
+photo documentation chain of custody legal evidence timestamp signature standard

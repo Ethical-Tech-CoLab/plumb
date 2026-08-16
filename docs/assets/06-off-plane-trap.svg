@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 380" width="760" height="380" role="img" aria-label="Section view showing why measuring a cornice that projects from the wall gives a wrong answer.">
+  <rect width="760" height="380" fill="#f8f9fb"/>
+  <text x="380" y="30" text-anchor="middle" font-family="system-ui,sans-serif" font-size="17" font-weight="700" fill="#1a1f26">The one big trap: things that stick out</text>
+  <text x="380" y="52" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12.5" fill="#495057">Section view (looking from the side). Plumb is only exact on the surface you calibrated.</text>
+
+  <!-- wall in section -->
+  <rect x="300" y="80" width="46" height="250" fill="#b08968" stroke="#8a5a3b" stroke-width="2"/>
+  <text x="323" y="350" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" fill="#8a5a3b">wall</text>
+
+  <!-- calibrated plane line -->
+  <line x1="300" y1="80" x2="300" y2="330" stroke="#1a71c1" stroke-width="4"/>
+  <text x="292" y="112" text-anchor="end" font-family="system-ui,sans-serif" font-size="12" font-weight="700" fill="#1a71c1">calibrated</text>
+  <text x="292" y="128" text-anchor="end" font-family="system-ui,sans-serif" font-size="12" font-weight="700" fill="#1a71c1">plane</text>
+  <text x="292" y="146" text-anchor="end" font-family="system-ui,sans-serif" font-size="11" fill="#495057">(where your</text>
+  <text x="292" y="161" text-anchor="end" font-family="system-ui,sans-serif" font-size="11" fill="#495057">target was)</text>
+
+  <!-- cornice projecting -->
+  <rect x="240" y="80" width="60" height="30" fill="#c99b73" stroke="#8a5a3b" stroke-width="2"/>
+  <text x="248" y="72" font-family="system-ui,sans-serif" font-size="12" font-weight="700" fill="#8a5a3b">cornice sticks out 600 mm</text>
+
+  <!-- depth arrow -->
+  <line x1="240" y1="122" x2="300" y2="122" stroke="#d6336c" stroke-width="2"/>
+  <polygon points="236,122 246,118 246,126" fill="#d6336c"/>
+  <polygon points="304,122 294,118 294,126" fill="#d6336c"/>
+  <text x="270" y="140" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" font-weight="700" fill="#d6336c">Δ depth</text>
+
+  <!-- camera -->
+  <g transform="translate(600,200)">
+    <rect x="0" y="0" width="54" height="38" rx="5" fill="#343a40"/>
+    <circle cx="27" cy="19" r="12" fill="#495057"/>
+    <circle cx="27" cy="19" r="6" fill="#adb5bd"/>
+    <text x="27" y="58" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" fill="#343a40">you</text>
+  </g>
+
+  <!-- sight lines -->
+  <line x1="598" y1="215" x2="300" y2="95" stroke="#868e96" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <line x1="598" y1="222" x2="240" y2="95" stroke="#d6336c" stroke-width="1.8"/>
+  <text x="430" y="150" font-family="system-ui,sans-serif" font-size="11" fill="#d6336c">what the camera sees</text>
+
+  <!-- error callout -->
+  <rect x="60" y="200" width="215" height="130" rx="8" fill="#fff0f3" stroke="#d6336c" stroke-width="2"/>
+  <text x="78" y="226" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#d6336c">Why it goes wrong</text>
+  <text x="78" y="248" font-family="system-ui,sans-serif" font-size="11.5" fill="#495057">A cornice 600 mm proud of a</text>
+  <text x="78" y="264" font-family="system-ui,sans-serif" font-size="11.5" fill="#495057">wall shot from 15 m can read</text>
+  <text x="78" y="280" font-family="system-ui,sans-serif" font-size="11.5" fill="#495057">about <tspan font-weight="700">24 mm wrong</tspan> — bigger</text>
+  <text x="78" y="296" font-family="system-ui,sans-serif" font-size="11.5" fill="#495057">than the whole error budget.</text>
+  <text x="78" y="318" font-family="system-ui,sans-serif" font-size="11.5" font-weight="700" fill="#1a1f26">And it looks perfectly fine.</text>
+
+  <!-- what to do -->
+  <rect x="430" y="272" width="290" height="90" rx="8" fill="#ebfbee" stroke="#2f9e44" stroke-width="2"/>
+  <text x="448" y="296" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#2f9e44">What to do instead</text>
+  <text x="448" y="316" font-family="system-ui,sans-serif" font-size="11.5" fill="#495057">1. Enter the depth in "Depth off plane", or</text>
+  <text x="448" y="332" font-family="system-ui,sans-serif" font-size="11.5" fill="#495057">2. Calibrate a second plane on the cornice, or</text>
+  <text x="448" y="348" font-family="system-ui,sans-serif" font-size="11.5" fill="#495057">3. Shoot a full set and let the server solve 3D.</text>
+</svg>

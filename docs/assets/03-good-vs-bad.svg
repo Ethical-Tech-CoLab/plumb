@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 400" width="760" height="400" role="img" aria-label="Comparison of a good capture and four common bad captures.">
+  <rect width="760" height="400" fill="#f8f9fb"/>
+  <text x="380" y="28" text-anchor="middle" font-family="system-ui,sans-serif" font-size="17" font-weight="700" fill="#1a1f26">Good shot vs. the four mistakes everyone makes</text>
+
+  <!-- GOOD -->
+  <g>
+    <rect x="30" y="50" width="200" height="150" fill="#e9d8c4" stroke="#2f9e44" stroke-width="3"/>
+    <g stroke="#d0b89c" stroke-width="1">
+      <line x1="30" y1="80" x2="230" y2="80"/><line x1="30" y1="110" x2="230" y2="110"/>
+      <line x1="30" y1="140" x2="230" y2="140"/><line x1="30" y1="170" x2="230" y2="170"/>
+    </g>
+    <rect x="95" y="105" width="66" height="44" fill="#fff" stroke="#1a1f26" stroke-width="2"/>
+    <rect x="101" y="111" width="14" height="14" fill="#1a1f26"/>
+    <rect x="141" y="129" width="14" height="14" fill="#1a1f26"/>
+    <text x="130" y="222" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#2f9e44">✓ GOOD</text>
+    <text x="130" y="240" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#495057">Square on, sharp, target flat</text>
+    <text x="130" y="255" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#495057">and clearly readable, wall fills</text>
+    <text x="130" y="270" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#495057">the frame.</text>
+  </g>
+
+  <!-- BAD 1: tilted -->
+  <g>
+    <g transform="rotate(-9 355 125)">
+      <rect x="270" y="55" width="170" height="128" fill="#e9d8c4" stroke="#d6336c" stroke-width="3"/>
+      <rect x="325" y="100" width="56" height="38" fill="#fff" stroke="#1a1f26" stroke-width="1.6"/>
+    </g>
+    <text x="355" y="222" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#d6336c">✕ TILTED</text>
+    <text x="355" y="240" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#495057">Watch the level bar. Keep</text>
+    <text x="355" y="255" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#495057">pitch and roll under 3°.</text>
+  </g>
+
+  <!-- BAD 2: blurry -->
+  <g>
+    <rect x="480" y="50" width="200" height="150" fill="#e9d8c4" stroke="#d6336c" stroke-width="3" opacity="0.55"/>
+    <rect x="545" y="105" width="66" height="44" fill="#fff" stroke="#868e96" stroke-width="6" opacity="0.5"/>
+    <rect x="549" y="109" width="58" height="36" fill="#fff" stroke="#adb5bd" stroke-width="4" opacity="0.5"/>
+    <text x="580" y="222" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#d6336c">✕ BLURRY</text>
+    <text x="580" y="240" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#495057">Brace yourself, tap to focus,</text>
+    <text x="580" y="255" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#495057">lock the optics, breathe out.</text>
+  </g>
+
+  <!-- BAD 3: target too small -->
+  <g>
+    <rect x="30" y="290" width="200" height="90" fill="#e9d8c4" stroke="#d6336c" stroke-width="3"/>
+    <rect x="122" y="328" width="14" height="10" fill="#fff" stroke="#1a1f26" stroke-width="1"/>
+    <text x="130" y="368" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" font-weight="700" fill="#d6336c">✕ TARGET TOO SMALL</text>
+  </g>
+  <text x="245" y="316" font-family="system-ui,sans-serif" font-size="11" fill="#495057">Too far away. The target must be</text>
+  <text x="245" y="332" font-family="system-ui,sans-serif" font-size="11" fill="#495057">clearly readable — get closer or</text>
+  <text x="245" y="348" font-family="system-ui,sans-serif" font-size="11" fill="#495057">use a bigger target. A tiny target</text>
+  <text x="245" y="364" font-family="system-ui,sans-serif" font-size="11" fill="#495057">means a large error.</text>
+
+  <!-- BAD 4: target at edge -->
+  <g>
+    <rect x="480" y="290" width="200" height="90" fill="#e9d8c4" stroke="#d6336c" stroke-width="3"/>
+    <rect x="486" y="300" width="46" height="30" fill="#fff" stroke="#1a1f26" stroke-width="1.6"/>
+    <text x="580" y="368" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" font-weight="700" fill="#d6336c">✕ TARGET AT THE EDGE</text>
+  </g>
+  <text x="470" y="316" text-anchor="end" font-family="system-ui,sans-serif" font-size="11" fill="#495057">Lens distortion is worst at frame</text>
+  <text x="470" y="332" text-anchor="end" font-family="system-ui,sans-serif" font-size="11" fill="#495057">edges. Keep the target near the</text>
+  <text x="470" y="348" text-anchor="end" font-family="system-ui,sans-serif" font-size="11" fill="#495057">centre, and near whatever you</text>
+  <text x="470" y="364" text-anchor="end" font-family="system-ui,sans-serif" font-size="11" fill="#495057">actually want to measure.</text>
+</svg>

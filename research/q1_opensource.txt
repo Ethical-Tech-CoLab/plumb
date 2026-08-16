@@ -1,0 +1,10 @@
+open source browser based photogrammetry measurement JavaScript WebAssembly
+OpenCV.js camera calibration browser lens distortion checkerboard web app
+ArUco marker detection JavaScript browser js-aruco2 pose estimation scale
+AprilTag detection WebAssembly browser javascript
+WebODM OpenDroneMap open source photogrammetry measurement accuracy
+Meshroom AliceVision COLMAP OpenMVG open source photogrammetry heritage building facade
+scale bar photogrammetry ground control points accuracy heritage documentation
+three.js measurement tool point to point distance web viewer open source
+Potree open source point cloud web viewer measurement distance area
+WebXR depth sensing API hit test measure real world distance browser

@@ -1,0 +1,50 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Secrets — never commit API keys or signing material
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+secrets.json
+
+# Field captures and processing output.
+# Raw imagery belongs in object storage with a provenance manifest, never in git.
+captures/
+uploads/
+out/
+*.orig.jpg
+*.orig.jpeg
+*.orig.dng
+*.orig.tif
+
+# Large research payloads are kept, but scratch output is not
+research/raw/*.tmp
+
+# Python venv / backend scratch
+server/.venv/
+server/data/
+server/data-smoke/
+.pytest_cache/
+

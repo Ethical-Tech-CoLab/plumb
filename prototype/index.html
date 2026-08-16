@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Plumb — measured photography for landmarks</title>
+<meta name="description" content="Take photographs you can measure from, with verifiable provenance. Calibrated on-screen grid and ruler for historic building and bridge documentation.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="theme-color" content="#0d1117">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Plumb">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <strong>Plumb</strong>
+    <span class="sub">measured photography for landmarks</span>
+    <a id="brandOrg" class="brand-org hidden" target="_blank" rel="noopener"></a>
+  </div>
+  <div class="topbar-right">
+    <button id="brandToggle" class="brand-toggle" type="button" aria-pressed="false"
+            title="Toggle Ethical Tech CoLab branding">Plumb</button>
+    <div id="tierBadge" class="badge badge-cal0">CAL-0 · NOT TO SCALE</div>
+  </div>
+</header>
+<div id="brandCredit" class="brand-credit hidden"></div>
+
+<main>
+  <!-- ============================== STAGE ============================== -->
+  <section class="stage-wrap">
+    <div id="stage" class="stage">
+      <video id="video" playsinline muted autoplay></video>
+      <canvas id="imageCanvas"></canvas>
+      <canvas id="overlayCanvas"></canvas>
+      <div id="hud" class="hud">
+        <div class="hud-row"><span>pitch</span><b id="hudPitch">–</b></div>
+        <div class="hud-row"><span>roll</span><b id="hudRoll">–</b></div>
+        <div class="hud-row"><span>heading</span><b id="hudHeading">–</b></div>
+        <div class="hud-row"><span>GPS</span><b id="hudGps">–</b></div>
+      </div>
+      <div id="levelWarn" class="level-warn hidden">OFF-PLUMB — square up the shot</div>
+      <div id="emptyState" class="empty">
+        <p><strong>1.</strong> Start the camera, or load a photo.</p>
+        <p><strong>2.</strong> Calibrate against something of known size.</p>
+        <p><strong>3.</strong> Add a hold-out check, then measure.</p>
+        <p class="muted">Everything runs locally. No image leaves this device.</p>
+      </div>
+    </div>
+
+    <div class="stage-tools">
+      <button id="btnGridOff" class="chip chip-on">Grid off</button>
+      <button id="btnGridComp" class="chip">Composition</button>
+      <button id="btnGridMetric" class="chip" disabled>Metric grid</button>
+      <button id="btnRuler" class="chip" disabled>Ruler</button>
+      <span class="sep"></span>
+      <label class="chip-label">interval
+        <select id="gridInterval">
+          <option value="10">10 mm</option>
+          <option value="50">50 mm</option>
+          <option value="100" selected>100 mm</option>
+          <option value="304.8">1 ft</option>
+          <option value="500">500 mm</option>
+          <option value="1000">1 m</option>
+        </select>
+      </label>
+      <label class="chip-label">units
+        <select id="unitSelect">
+          <option value="mm" selected>mm</option>
+          <option value="cm">cm</option>
+          <option value="m">m</option>
+          <option value="in">in</option>
+          <option value="ft">ft</option>
+        </select>
+      </label>
+    </div>
+  </section>
+
+  <!-- ============================== PANEL ============================== -->
+  <aside class="panel">
+
+    <details open>
+      <summary>1 · Capture</summary>
+      <div class="pad">
+        <div id="platformBadge" class="platform">detecting platform…</div>
+
+        <div class="btn-row">
+          <button id="btnStartCam" class="btn btn-primary">Start camera</button>
+          <button id="btnTakePhoto" class="btn btn-primary" disabled>Full-res photo</button>
+        </div>
+
+        <!-- Android camera control: locked optics keep the intrinsic profile valid -->
+        <div id="camControls" class="cam-controls hidden">
+          <div class="btn-row">
+            <button id="btnTorch" class="btn btn-ghost" disabled>Torch</button>
+            <button id="btnLockOptics" class="btn btn-ghost" disabled>Lock focus + exposure</button>
+          </div>
+          <label id="zoomWrap" class="hidden">optical zoom <span id="zoomVal">1.0×</span>
+            <input id="zoomSlider" type="range" min="1" max="1" step="0.1" value="1">
+          </label>
+          <div id="camState" class="cam-state">–</div>
+        </div>
+
+        <div class="btn-row">
+          <button id="btnGrab" class="btn btn-ghost" disabled>Freeze preview frame</button>
+        </div>
+
+        <label class="file-btn">
+          Load photo / native camera
+          <input id="fileInput" type="file" accept="image/*" capture="environment" hidden>
+        </label>
+
+        <p class="hint" id="captureHint">
+          Android Chrome is the reference platform: <code>ImageCapture.takePhoto()</code> returns a
+          full sensor-resolution still in-page, and the optics can be locked so a device calibration
+          profile stays valid for the whole session.
+        </p>
+
+        <div class="btn-row">
+          <button id="btnSensors" class="btn btn-ghost">Enable sensors</button>
+          <button id="btnCaps" class="btn btn-ghost">Browser capabilities</button>
+        </div>
+        <pre id="capsOut" class="out hidden"></pre>
+      </div>
+    </details>
+
+    <details open>
+      <summary>2 · Calibrate</summary>
+      <div class="pad">
+        <div class="seg">
+          <button class="seg-btn seg-on" data-mode="cal3">CAL-3 · 4-point</button>
+          <button class="seg-btn" data-mode="cal2">CAL-2 · known length</button>
+        </div>
+
+        <div id="cal3Box">
+          <p class="hint">
+            Click the <b>4 corners</b> of a rectangle whose real size you have <b>measured</b>
+            (a printed target, a window opening, a panel). Order: top-left, top-right,
+            bottom-right, bottom-left.
+          </p>
+          <div class="grid2">
+            <label>Width (mm)<input id="rectW" type="number" value="600" step="0.1"></label>
+            <label>Height (mm)<input id="rectH" type="number" value="400" step="0.1"></label>
+          </div>
+          <label>Target tolerance (mm)
+            <input id="targetTol" type="number" value="0.5" step="0.1">
+          </label>
+          <p class="warn">
+            Type the size you <b>measured with a steel rule</b>, not the size you asked the printer
+            for. Home printers scale.
+          </p>
+          <div class="btn-row">
+            <button id="btnPickTarget" class="btn">Pick 4 corners</button>
+            <button id="btnSolve" class="btn btn-primary" disabled>Solve calibration</button>
+          </div>
+        </div>
+
+        <div id="cal2Box" class="hidden">
+          <p class="hint">Click <b>2 points</b> across a known length lying in the plane you will measure.</p>
+          <label>Known length (mm)<input id="knownLen" type="number" value="1000" step="0.1"></label>
+          <div class="btn-row">
+            <button id="btnPickScale" class="btn">Pick 2 points</button>
+          </div>
+          <p class="warn">CAL-2 is valid only along that direction, near the frame centre, on a
+            near-fronto-parallel shot.</p>
+        </div>
+
+        <label>Plane description
+          <input id="planeDesc" type="text" placeholder="e.g. north facade, brick face, ground floor">
+        </label>
+
+        <pre id="calOut" class="out hidden"></pre>
+      </div>
+    </details>
+
+    <details open>
+      <summary>3 · Verify (hold-out check)</summary>
+      <div class="pad">
+        <p class="hint">
+          A calibration with no independent check is <b>never</b> VERIFIED. Pick two points across a
+          length you know but did <b>not</b> use in the fit.
+        </p>
+        <div class="grid2">
+          <label>Check label<input id="checkLabel" type="text" value="check 1"></label>
+          <label>Known (mm)<input id="checkKnown" type="number" value="1220" step="0.1"></label>
+        </div>
+        <label>Tolerance (%)<input id="checkTol" type="number" value="1.0" step="0.1"></label>
+        <div class="btn-row">
+          <button id="btnPickCheck" class="btn" disabled>Pick check points</button>
+        </div>
+        <div id="checkList" class="list"></div>
+        <div id="calStatus" class="status status-unverified">UNVERIFIED</div>
+      </div>
+    </details>
+
+    <details open>
+      <summary>4 · Measure</summary>
+      <div class="pad">
+        <div class="grid2">
+          <label>Label<input id="measLabel" type="text" value="measurement"></label>
+          <label>Depth off plane (mm)<input id="measDepth" type="number" value="0" step="1"></label>
+        </div>
+        <div class="btn-row">
+          <button id="btnMeasure" class="btn btn-primary" disabled>Measure distance</button>
+          <button id="btnClearMeas" class="btn btn-ghost">Clear</button>
+        </div>
+        <div id="measList" class="list"></div>
+      </div>
+    </details>
+
+    <details open>
+      <summary>4b · AR measure &amp; depth (Android)</summary>
+      <div class="pad">
+        <p class="hint">
+          On Android, WebXR hit-test gives marker-free point-to-point measurement, and the ARCore
+          depth stream measures how far a feature actually stands off the calibrated plane — which is
+          the dominant source of silent error in single-image metrology.
+        </p>
+        <div class="btn-row">
+          <button id="btnArCheck" class="btn btn-ghost">Check WebXR support</button>
+          <button id="btnArMeasure" class="btn" disabled>AR measure</button>
+        </div>
+        <div id="arState" class="cam-state">–</div>
+        <div id="arList" class="list"></div>
+      </div>
+    </details>
+
+    <details>
+      <summary>5 · Subject &amp; operator</summary>
+      <div class="pad">
+        <div class="grid2">
+          <label>Subject name<input id="subjName" type="text" placeholder="e.g. 55 Water Street"></label>
+          <label>Identifier<input id="subjId" type="text" placeholder="LPC / NRHP / HAER / BIN"></label>
+        </div>
+        <div class="grid2">
+          <label>Registry<input id="subjRegistry" type="text" placeholder="e.g. NYC LPC"></label>
+          <label>Elevation<input id="subjFace" type="text" placeholder="e.g. north"></label>
+        </div>
+        <div class="grid2">
+          <label>Operator<input id="opName" type="text"></label>
+          <label>Organisation<input id="opOrg" type="text"></label>
+        </div>
+        <label>Credential level
+          <select id="opLevel">
+            <option value="public">public contributor</option>
+            <option value="trained">trained volunteer</option>
+            <option value="professional">licensed professional</option>
+          </select>
+        </label>
+        <label class="check"><input id="subjConfirm" type="checkbox"> I confirm this is the subject above</label>
+      </div>
+    </details>
+
+    <details open>
+      <summary>6 · Export</summary>
+      <div class="pad">
+        <div class="btn-row">
+          <button id="btnExportRaw" class="btn" disabled>Raw image</button>
+          <button id="btnExportOverlay" class="btn" disabled>Overlay PNG</button>
+        </div>
+        <div class="btn-row">
+          <button id="btnExportComposite" class="btn" disabled>Annotated derivative</button>
+          <button id="btnExportManifest" class="btn btn-primary" disabled>Provenance sidecar</button>
+        </div>
+        <p class="hint">
+          The raw image is exported byte-identical. Overlays are separate artifacts. The sidecar
+          references the original by SHA-256 and lists explicitly what it does <b>not</b> prove.
+        </p>
+      </div>
+    </details>
+
+    <details open>
+      <summary>7 · Upload &amp; data use</summary>
+      <div class="pad">
+        <div id="netStatus" class="net-status">checking connection…</div>
+
+        <label>When to upload
+          <select id="uploadPolicy">
+            <option value="wifi-only" selected>Wi-Fi only (default)</option>
+            <option value="wifi-preferred">Wi-Fi preferred — fast cellular OK</option>
+            <option value="any-network">Any network</option>
+            <option value="manual">Manual only</option>
+          </select>
+        </label>
+        <p id="policyDesc" class="hint"></p>
+
+        <label class="check">
+          <input id="unknownAsUnmetered" type="checkbox">
+          Treat unknown networks as unmetered
+        </label>
+        <p class="hint">
+          Some browsers (notably desktop and iOS Safari) don't report whether you're on Wi-Fi. Leave
+          this off to be safe; turn it on if uploads are being held when they shouldn't be.
+        </p>
+
+        <div class="queue-box">
+          <div class="queue-row"><span>Queued</span><b id="queueCount">0 captures</b></div>
+          <div class="queue-row"><span>Size</span><b id="queueSize">0 B</b></div>
+        </div>
+
+        <div class="btn-row">
+          <button id="btnQueue" class="btn" disabled>Add to upload queue</button>
+          <button id="btnUploadNow" class="btn btn-ghost">Upload now (once)</button>
+        </div>
+        <p class="warn">
+          Captures are never lost while waiting — they sit in the local queue until the policy is met.
+          Processing is asynchronous, so holding an upload costs you nothing.
+        </p>
+      </div>
+    </details>
+
+  </aside>
+</main>
+
+<div id="toast" class="toast hidden"></div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

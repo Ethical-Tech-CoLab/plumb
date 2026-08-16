@@ -1,0 +1,56 @@
+# Plumb backend — local / self-hosted deployment.
+#
+#   docker compose up -d --build
+#   curl http://localhost:8080/v1/meta
+#
+# This is the "install it on a laptop, a lab machine, or a box on the LAN"
+# path. Nothing here needs a cloud account.
+
+services:
+  plumb-backend:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    image: plumb-backend:local
+    container_name: plumb-backend
+    restart: unless-stopped
+    ports:
+      - "${PLUMB_BIND:-127.0.0.1}:8080:8080"
+    environment:
+      PLUMB_ENV: self-hosted
+      PLUMB_DATA_DIR: /data
+      PLUMB_STORAGE: local
+
+      # CORS — set this to the Pages origin serving the Plumb client.
+      # Same semantics as pages-ai-proxy: exact, wildcard, or "*".
+      ALLOWED_ORIGINS: "${ALLOWED_ORIGINS:-https://ethical-tech-colab.github.io,http://localhost:8777,http://127.0.0.1:8777}"
+
+      # Public URL of THIS service, used to build image_url in contract exports.
+      PLUMB_PUBLIC_BASE_URL: "${PLUMB_PUBLIC_BASE_URL:-}"
+
+      # Turn auth on for anything reachable beyond localhost.
+      PLUMB_REQUIRE_AUTH: "${PLUMB_REQUIRE_AUTH:-false}"
+      PLUMB_API_TOKENS: "${PLUMB_API_TOKENS:-}"
+
+      # Trust services. Unset means the service says so rather than pretending.
+      PLUMB_TSA_URL: "${PLUMB_TSA_URL:-}"
+      PLUMB_C2PA_TOOL: "${PLUMB_C2PA_TOOL:-}"
+      PLUMB_C2PA_CERT: "${PLUMB_C2PA_CERT:-}"
+      PLUMB_C2PA_KEY: "${PLUMB_C2PA_KEY:-}"
+
+      # digital-3d contract identity.
+      PLUMB_MODULE_ID: "${PLUMB_MODULE_ID:-plumb-photo-survey}"
+      PLUMB_FRAME_ID: "${PLUMB_FRAME_ID:-nyc-harbor-enu}"
+      PLUMB_CAMPAIGN_ID: "${PLUMB_CAMPAIGN_ID:-plumb-field-capture}"
+    volumes:
+      - plumb-data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  plumb-data:
+    driver: local

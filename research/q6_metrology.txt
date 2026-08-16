@@ -1,0 +1,10 @@
+single image metrology vanishing points measure building height from one photo
+homography rectification four known points facade measure distances photo
+perspective correction rectified photo scale accuracy error sources oblique angle
+photogrammetric coded targets printed scale bar calibrated accuracy verification
+GSD ground sample distance calculation camera sensor focal length distance formula
+smartphone camera EXIF focal length 35mm equivalent sensor size estimate scale
+Brooklyn Bridge historic documentation HAER laser scan 3D survey
+DUMBO historic district Brooklyn documentation survey preservation
+crowdsourced photo documentation quality control validation heritage citizen science
+photo scale stick ranging rod architectural photography documentation standard

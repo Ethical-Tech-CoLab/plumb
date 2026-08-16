@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420" width="760" height="420" role="img" aria-label="Plan view showing where to stand relative to a facade: square-on is correct, oblique is acceptable, extreme angle is wrong.">
+  <rect width="760" height="420" fill="#f8f9fb"/>
+  <text x="380" y="30" text-anchor="middle" font-family="system-ui,sans-serif" font-size="17" font-weight="700" fill="#1a1f26">Where to stand — plan view (looking down)</text>
+
+  <!-- facade wall -->
+  <rect x="90" y="70" width="580" height="14" fill="#4a5568"/>
+  <text x="380" y="62" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" fill="#4a5568">building facade (the plane you are measuring)</text>
+
+  <!-- target on wall -->
+  <rect x="360" y="66" width="42" height="22" fill="#fff" stroke="#d6336c" stroke-width="2.5"/>
+  <text x="381" y="106" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" font-weight="600" fill="#d6336c">scale target</text>
+
+  <!-- GOOD: square on -->
+  <circle cx="381" cy="300" r="13" fill="#2f9e44"/>
+  <text x="381" y="305" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#fff">1</text>
+  <line x1="381" y1="287" x2="381" y2="96" stroke="#2f9e44" stroke-width="2.5"/>
+  <polygon points="381,90 376,102 386,102" fill="#2f9e44"/>
+  <path d="M 366 84 L 366 99 L 381 99" fill="none" stroke="#2f9e44" stroke-width="1.6"/>
+  <text x="381" y="332" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#2f9e44">BEST — square on (90°)</text>
+  <text x="381" y="350" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11.5" fill="#495057">Stand directly in front. Camera perpendicular</text>
+  <text x="381" y="366" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11.5" fill="#495057">to the wall. Least distortion, best accuracy.</text>
+
+  <!-- OK: moderate angle -->
+  <circle cx="180" cy="270" r="13" fill="#f08c00"/>
+  <text x="180" y="275" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#fff">2</text>
+  <line x1="190" y1="259" x2="368" y2="96" stroke="#f08c00" stroke-width="2.5" stroke-dasharray="7 4"/>
+  <polygon points="373,91 361,95 368,103" fill="#f08c00"/>
+  <text x="150" y="302" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#f08c00">OK — up to ~30°</text>
+  <text x="150" y="320" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11.5" fill="#495057">Plumb corrects this, but</text>
+  <text x="150" y="336" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11.5" fill="#495057">accuracy drops. Use if you</text>
+  <text x="150" y="352" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11.5" fill="#495057">cannot get square on.</text>
+
+  <!-- BAD: extreme -->
+  <circle cx="655" cy="345" r="13" fill="#d6336c"/>
+  <text x="655" y="350" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#fff">3</text>
+  <line x1="643" y1="336" x2="404" y2="98" stroke="#d6336c" stroke-width="2.5" stroke-dasharray="4 4"/>
+  <polygon points="399,93 404,106 411,98" fill="#d6336c"/>
+  <text x="640" y="378" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#d6336c">AVOID — beyond ~45°</text>
+  <text x="640" y="396" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11.5" fill="#495057">Target becomes too flattened to read.</text>
+  <text x="640" y="412" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11.5" fill="#495057">Re-shoot from a better position.</text>
+
+  <!-- distance guidance -->
+  <line x1="110" y1="180" x2="110" y2="84" stroke="#868e96" stroke-width="1.4"/>
+  <polygon points="110,80 106,90 114,90" fill="#868e96"/>
+  <polygon points="110,184 106,174 114,174" fill="#868e96"/>
+  <text x="120" y="140" font-family="system-ui,sans-serif" font-size="11.5" fill="#495057">Stand back far enough that the</text>
+  <text x="120" y="156" font-family="system-ui,sans-serif" font-size="11.5" fill="#495057">whole area you want fills the frame.</text>
+</svg>
