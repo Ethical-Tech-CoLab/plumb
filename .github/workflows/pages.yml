@@ -33,9 +33,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      # The metrology core is the part that must not ship broken.
-      - name: Run metrology unit tests
-        run: node --test prototype/test/geometry.test.mjs
+      # The metrology core and the pose logic are the parts that must not ship
+      # broken. Files are listed explicitly because `--test <dir>` does not
+      # recurse consistently across Node versions.
+      - name: Run unit tests
+        run: |
+          node --test \
+            prototype/test/geometry.test.mjs \
+            prototype/test/level.test.mjs
 
   build:
     name: Build site

@@ -38,7 +38,6 @@ import {
 import {
   sha256,
   currentPosition,
-  startOrientationWatch,
   browserCapabilities,
   buildManifest,
   downloadBlob,
@@ -48,6 +47,7 @@ import {
 import { CameraController, detectPlatform } from './lib/camera.js';
 import { xrSupport, startArMeasureSession, xrDistanceMm, planeDeviationMm } from './lib/arxr.js';
 import { initBranding, brandProvenance } from './lib/branding.js';
+import { LevelTracker, drawBubbleLevel } from './lib/level.js';
 import {
   UPLOAD_POLICIES,
   getPolicy,
@@ -103,6 +103,114 @@ const state = {
 };
 
 const camera = new CameraController();
+
+// ------------------------------------------------ levelling & steadiness
+
+const levelCanvas = $('levelCanvas');
+const lctx = levelCanvas.getContext('2d');
+
+let autoCaptureArmed = false;
+let autoCaptureTimer = null;
+
+/**
+ * A degree value rendered for humans: whole degrees, fixed width, and a
+ * non-breaking sign column so the string length never changes. This is what
+ * stops the readout twitching.
+ */
+function fmtDeg(v) {
+  if (v == null || Number.isNaN(v)) return '–';
+  const r = Math.round(v);
+  return `${r > 0 ? '+' : r < 0 ? '−' : ' '}${String(Math.abs(r)).padStart(2, ' ')}°`;
+}
+
+function renderLevel(state) {
+  // Numbers are secondary — updated slowly, in whole degrees, for the record.
+  $('hudPitch').textContent = fmtDeg(state.pitchOff);
+  $('hudRoll').textContent = fmtDeg(state.rollOff);
+  $('hudHeading').textContent =
+    state.heading == null ? '–' : `${String(Math.round(state.heading)).padStart(3, ' ')}°`;
+
+  // The bubble is the primary instrument. No reading required.
+  const stage = $('stage').getBoundingClientRect();
+  levelCanvas.width = Math.round(stage.width);
+  levelCanvas.height = Math.round(stage.height);
+  lctx.clearRect(0, 0, levelCanvas.width, levelCanvas.height);
+
+  if (state.mode.idealPitch !== null) {
+    drawBubbleLevel(lctx, state, {
+      cx: levelCanvas.width / 2,
+      cy: levelCanvas.height / 2,
+      radius: Math.min(64, Math.max(40, levelCanvas.width * 0.14)),
+    });
+  }
+
+  const el = $('levelStatus');
+  el.classList.remove('hidden', 'is-ready', 'is-close', 'is-off');
+
+  if (state.mode.idealPitch === null) {
+    el.classList.add('hidden');
+    return;
+  }
+
+  // Say what to DO, not what the numbers are.
+  let text;
+  let cls;
+  if (state.ready) {
+    text = autoCaptureArmed ? 'Hold it — capturing…' : '✓ Good — take the shot';
+    cls = 'is-ready';
+  } else if (!state.steady) {
+    text = 'Hold steady…';
+    cls = 'is-close';
+  } else {
+    const off = state.pitchOff;
+    const dir =
+      state.mode.id === 'ground'
+        ? off > 0 ? 'Tip the top of the phone down' : 'Tip the top of the phone up'
+        : off > 0 ? 'Lean the top of the phone back' : 'Tip the top of the phone forward';
+    text = dir;
+    cls = Math.abs(off) > 30 ? 'is-off' : 'is-close';
+  }
+  $('levelStatusText').textContent = text;
+  el.classList.add(cls);
+}
+
+const levelTracker = new LevelTracker({
+  onUpdate: (levelState) => {
+    orientationState = levelState;
+    // Keep the sidecar's orientation record in sync with the smoothed pose.
+    state.orientation = {
+      beta: levelState.pitch,
+      gamma: levelState.roll,
+      compass_heading: levelState.heading,
+      pitch_off_ideal_deg: levelState.pitchOff,
+      subject_mode: levelState.mode.id,
+      steady_at_capture: levelState.steady,
+      precision_penalty: levelState.precisionPenalty,
+    };
+    renderLevel(levelState);
+  },
+  onReadyChange: (levelState) => {
+    if (!$('autoCapture').checked || !camera.imageCapture) return;
+    if (levelState.ready) {
+      // Short settle delay: capture after the hand relaxes, not during the
+      // movement that got us here.
+      autoCaptureArmed = true;
+      clearTimeout(autoCaptureTimer);
+      autoCaptureTimer = setTimeout(async () => {
+        if (levelTracker.ready) {
+          autoCaptureArmed = false;
+          await takeFullResPhoto();
+          toast('Auto-captured while level and steady.');
+        }
+      }, 700);
+    } else {
+      autoCaptureArmed = false;
+      clearTimeout(autoCaptureTimer);
+    }
+  },
+});
+
+let orientationState = null;
 
 const imageCanvas = $('imageCanvas');
 const overlayCanvas = $('overlayCanvas');
@@ -880,23 +988,33 @@ function renderArMeasurements() {
 }
 
 $('btnSensors').addEventListener('click', async () => {
-  const watch = startOrientationWatch((o) => {
-    state.orientation = o;
-    $('hudPitch').textContent = o.beta == null ? '–' : `${o.beta.toFixed(1)}°`;
-    $('hudRoll').textContent = o.gamma == null ? '–' : `${o.gamma.toFixed(1)}°`;
-    $('hudHeading').textContent = o.compass_heading == null
-      ? (o.alpha == null ? '–' : `${o.alpha.toFixed(0)}°*`)
-      : `${o.compass_heading.toFixed(0)}° ±${o.compass_accuracy_deg ?? '?'}`;
-    const off = Math.max(Math.abs(o.gamma ?? 0), Math.abs((o.beta ?? 90) - 90));
-    $('levelWarn').classList.toggle('hidden', off <= 3);
-  });
-  const ok = await watch.request();
-  toast(ok ? 'Orientation sensors active.' : 'Orientation permission denied or unavailable.');
+  const ok = await levelTracker.requestPermission();
+  toast(ok
+    ? 'Levelling active. Watch the bubble, not the numbers.'
+    : 'Orientation permission denied or unavailable.');
 
   state.position = await currentPosition();
   $('hudGps').textContent = state.position
-    ? `±${state.position.accuracy_m.toFixed(0)} m`
-    : 'n/a';
+    ? `±${String(Math.round(state.position.accuracy_m)).padStart(3, ' ')}m`
+    : '  n/a';
+});
+
+$('subjectMode').addEventListener('change', (e) => {
+  levelTracker.setMode(e.target.value);
+  lctx.clearRect(0, 0, levelCanvas.width, levelCanvas.height);
+  const mode = levelTracker.mode;
+  $('levelStatus').classList.toggle('hidden', mode.idealPitch === null);
+  toast(mode.hint);
+});
+
+$('autoCapture').addEventListener('change', (e) => {
+  if (e.target.checked && !camera.imageCapture) {
+    e.target.checked = false;
+    return toast('Auto-capture needs the in-page camera — tap "Start camera" first.', 4200);
+  }
+  toast(e.target.checked
+    ? 'Auto-capture on. Brace the phone and wait — it will fire when steady.'
+    : 'Auto-capture off.');
 });
 
 $('btnCaps').addEventListener('click', () => {

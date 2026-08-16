@@ -327,21 +327,71 @@ Mitigations, all implemented as product features:
 
 ## 5. Capture geometry rules the app enforces
 
-Derived from the close-range photogrammetry and heritage guidance sources:
+Derived from the close-range photogrammetry and heritage guidance sources — but with tolerances set by
+what the maths actually requires, not by what feels rigorous.
 
-- **Fronto-parallel where possible**; the level HUD flags roll/pitch beyond a configurable threshold
-  (default 3°).
+### How much does camera tilt really cost?
+
+A homography corrects **any** perspective exactly, so tilt introduces **no bias** in a `CAL-3`
+measurement. What it costs is *precision*, through foreshortening: the target's projected size shrinks
+by `cos θ`, so corner-localisation error in that direction grows by `1 / cos θ`.
+
+| Tilt | Target shrinks to | Precision penalty |
+|---|---|---|
+| 3° | 99.9 % | ×1.001 |
+| 10° | 98.5 % | ×1.015 |
+| 15° | 96.6 % | ×1.035 |
+| 20° | 94.0 % | ×1.064 |
+| 30° | 86.6 % | ×1.155 |
+| 45° | 70.7 % | ×1.414 |
+
+Concretely, on a 150 mm target read to 0.5 px:
+
+```
+ 3° tilt  ->  corner precision 0.501 mm
+15° tilt  ->  corner precision 0.518 mm
+                       difference 0.017 mm
+```
+
+Against a typical **operator tap error of 1–3 mm**, that difference is roughly two orders of magnitude
+down. **A 3° gate — which the app originally enforced — was unusable handheld and bought essentially
+nothing.** It was removed after field feedback.
+
+**Roll is not pitch.** Roll rotates the image about the optical axis; it changes nothing whatsoever
+about the plane geometry, and has *zero* metrological cost. It matters only for the tidiness of the
+archival record shot. Pitch and yaw carry the foreshortening penalty, so only they carry a tolerance.
+
+### The rules
+
+- **Roughly fronto-parallel.** Graded feedback, not a gate: excellent ≤ 5°, good ≤ 15°, fair ≤ 30°,
+  re-shoot beyond ~45°. Readiness uses **hysteresis** (arm at 12°, disarm at 18°) so the indicator
+  cannot flicker on the boundary.
+- **Steadiness matters more than angle.** Movement at the shutter ruins more captures than tilt does,
+  so the app tracks peak-to-peak movement and refuses to arm while the phone is moving — however good
+  the angle happens to be at that instant.
+- **Auto-capture on settle.** Holding still *and* pressing a button is the hard part; the app fires
+  itself once level and steady. This is the single biggest usability win available for handheld work.
 - **Fill the frame with the subject plane**; keep the calibration target in the same plane and, ideally,
   near the centre of the region being measured.
-- **Two targets, one at each end** of the measured span beats one target in the middle — it bounds
-  scale error across the span instead of extrapolating.
+- **Two targets, one at each end** of the measured span beats one target in the middle.
 - **Avoid frame edges** for critical measurements at tiers below `CAL-4`.
-- **Lock zoom.** Any digital zoom invalidates the intrinsic profile; the app records the zoom factor and
-  refuses `CAL-4` profiles when zoom ≠ 1.
+- **Lock zoom.** Any digital zoom invalidates the intrinsic profile; the app records the zoom factor
+  and refuses `CAL-4` profiles when zoom ≠ 1.
 - **For SfM sets:** ≥ 60–80 % overlap, convergent (not just parallel) stations, consistent exposure,
   and at least one certified scale bar visible in multiple images.
 - **Duplicate captures**: with-scale and clean, per the SOI/HABS requirement — automated as a single
   operator action.
+
+### Presenting pose to a human
+
+Raw `DeviceOrientationEvent` arrives at ~60 Hz and jitters by about a degree at rest. Displayed
+directly to one decimal place it is unreadable, and — because a variable-width number in a
+space-between layout drags its own label around — it makes the whole readout appear to flash.
+
+The app therefore: exponentially smooths each axis, applies a dead-band so small jitter never moves
+the reported value, throttles repaints to ~8 Hz, renders whole degrees in tabular figures at a fixed
+column width, and puts the primary signal in a **bullseye bubble level** plus a **haptic buzz** on
+arrival — so the operator can watch the building instead of the screen.
 
 ---
 

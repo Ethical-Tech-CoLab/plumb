@@ -207,17 +207,65 @@ Then put the card **flat against that same surface**, near the middle of the are
 
 ![Where to stand](docs/assets/01-where-to-stand.svg)
 
-Stand **directly in front** of the wall, camera pointing straight at it — not off to one side, not
-tilted up or down.
+Stand **roughly in front** of the wall, camera pointing at it. You do not need to be perfect — Plumb
+corrects perspective mathematically, so being a few degrees off costs you almost nothing.
 
-| Angle | Verdict |
-|---|---|
-| Straight on (90°) | **Best** |
-| Up to ~30° off | Fine — Plumb corrects it |
-| Beyond ~45° | **Re-shoot** — the card gets too squashed to read |
+### Watch the bubble, not the numbers
 
-Stand back far enough that the area you want fills the frame, and **watch the level bar** at the top
-of the screen. Keep pitch and roll under 3°; the app warns you when you're off.
+Tap **Enable sensors** and a **bubble level** appears in the middle of the screen — the same idea as
+the bubble on a tripod head. Get the bubble inside the ring. That's it.
+
+- 🟢 **Bubble in the ring** → good, take the shot
+- 🟠 **Bubble outside** → the app tells you which way to tip the phone, in words
+- 📳 **A short buzz** means you've arrived — you can keep your eyes on the building
+
+There are numbers in the corner too, but they're for the record. **You should never need to read them.**
+
+### How square is square enough?
+
+More relaxed than you'd think, because a homography corrects any perspective *exactly*. Tilt doesn't
+bias your measurement — it only costs a little precision, by squashing the target:
+
+| Off by | Target shrinks to | Precision cost | Verdict |
+|---|---|---|---|
+| 5° | 99.6% | ×1.00 | perfect |
+| 10° | 98.5% | ×1.02 | fine |
+| 15° | 96.6% | ×1.04 | fine |
+| 20° | 94.0% | ×1.06 | acceptable |
+| 30° | 86.6% | ×1.15 | getting sloppy |
+| 45° | 70.7% | ×1.41 | re-shoot |
+
+> An earlier version of this app demanded 3°, which is very hard to hold by hand. That turned out to
+> be buying about **0.017 mm** of extra precision — against a typical operator tap error of **1–3 mm**.
+> It was a hundred times stricter than it needed to be. Roughly upright is genuinely fine.
+
+**Sideways tilt (roll) doesn't matter at all** for measurement — it just rotates the picture. Keep it
+level for a tidy archival photo, but it will never block you.
+
+### Holding the phone still
+
+Movement at the moment of the shutter ruins more captures than tilt ever does.
+
+- **Brace against something** — a railing, a lamppost, a wall, your own chest
+- **Tuck your elbows in** against your ribs
+- **Breathe out, then shoot** — don't hold your breath
+- A **tripod** is ideal if you have one and the site permits it (some landmark sites restrict them).
+  A tabletop or clamp tripod on a railing works well. **You do not need one** — this is designed to
+  work handheld
+- Use **auto-capture** (below) rather than tapping the screen, which nudges the phone
+
+### Let the phone take the shot
+
+Tick **Auto-capture when level and steady** in the Capture panel. Brace the phone, aim, and wait — it
+fires by itself once it's settled.
+
+This removes the hardest part of handheld capture: holding still *and* pressing a button at the same
+time.
+
+### Photographing the ground?
+
+Set **What are you photographing** to *"The ground or paving"* and the bubble re-centres for a
+phone pointing down instead of upright.
 
 ---
 
@@ -393,6 +441,8 @@ If you remember one thing from this guide, make it this one.
 | Measuring to the paper edge | ~8% error | Measure where black meets white |
 | Card held in hand, or tilted | Bad calibration | Tape it flat to the wall |
 | Card bent or bowed | Corners fall out of plane | Glue it to stiff board |
+| **Moving as you tap the shutter** | **Blur — the commonest ruined capture** | **Brace, and use auto-capture** |
+| Chasing perfect level | Wastes time for ~0.02 mm | Bubble in the ring is enough |
 | Skipping the check | You never find out it's wrong | Always do a hold-out check |
 | Checking against your own card | Proves nothing | Use a *different* known length |
 | Measuring things that stick out | Silently wrong | See [the one big trap](#the-one-big-trap) |
@@ -421,7 +471,8 @@ If you remember one thing from this guide, make it this one.
 │  AT THE WALL                                        │
 │   □ Safe spot, on the pavement                      │
 │   □ Card FLAT on the wall you're measuring          │
-│   □ Square on; level bar under 3°                   │
+│   □ Bubble inside the ring — roughly upright is fine│
+│   □ Brace against something; use auto-capture       │
 │   □ Zoom 1.0×; lock focus + exposure                │
 │   □ Full-res photo — with card, then clean          │
 │                                                     │

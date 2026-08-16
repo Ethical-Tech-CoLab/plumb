@@ -128,8 +128,67 @@ main {
   font: 600 11px/1.6 ui-monospace, Consolas, monospace;
   pointer-events: none;
 }
-.hud-row { display: flex; gap: 10px; justify-content: space-between; }
-.hud-row span { color: var(--muted); }
+
+/*
+ * The readout used to appear to flash. The cause was layout, not colour:
+ * `space-between` with a variable-width value meant the number's left edge
+ * moved every time a digit changed width, dragging the eye and making the
+ * static labels look like they were twitching too.
+ *
+ * Fixed by pinning the label column, giving the value a fixed width, and using
+ * tabular figures so every digit occupies the same advance.
+ */
+.hud-row {
+  display: grid;
+  grid-template-columns: 3.4em 4.2em;
+  column-gap: 8px;
+  align-items: baseline;
+}
+.hud-k { color: var(--muted); }
+.hud-v {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+  /* No transition: an animated number is harder to read than a static one. */
+}
+
+.level-canvas {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  pointer-events: none;
+}
+
+.level-status {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  padding: 8px 16px;
+  border-radius: 999px;
+  font: 700 13px/1 ui-monospace, Consolas, monospace;
+  white-space: nowrap;
+  pointer-events: none;
+  border: 1.5px solid;
+  background: rgba(5, 8, 12, .8);
+  color: var(--muted);
+  border-color: var(--line);
+  /* Colour may animate; the text must not move. */
+  transition: color .2s ease, border-color .2s ease;
+}
+.level-status.is-ready { color: var(--ok); border-color: var(--ok); }
+.level-status.is-close { color: var(--warn); border-color: var(--warn); }
+.level-status.is-off   { color: var(--danger); border-color: var(--danger); }
+
+.steady-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 9px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: rgba(0, 0, 0, .18);
+}
 
 .level-warn {
   position: absolute;

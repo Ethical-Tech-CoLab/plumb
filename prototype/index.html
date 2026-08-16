@@ -38,13 +38,19 @@
       <video id="video" playsinline muted autoplay></video>
       <canvas id="imageCanvas"></canvas>
       <canvas id="overlayCanvas"></canvas>
+      <canvas id="levelCanvas" class="level-canvas"></canvas>
+
       <div id="hud" class="hud">
-        <div class="hud-row"><span>pitch</span><b id="hudPitch">–</b></div>
-        <div class="hud-row"><span>roll</span><b id="hudRoll">–</b></div>
-        <div class="hud-row"><span>heading</span><b id="hudHeading">–</b></div>
-        <div class="hud-row"><span>GPS</span><b id="hudGps">–</b></div>
+        <div class="hud-row"><span class="hud-k">pitch</span><b id="hudPitch" class="hud-v">–</b></div>
+        <div class="hud-row"><span class="hud-k">roll</span><b id="hudRoll" class="hud-v">–</b></div>
+        <div class="hud-row"><span class="hud-k">head</span><b id="hudHeading" class="hud-v">–</b></div>
+        <div class="hud-row"><span class="hud-k">GPS</span><b id="hudGps" class="hud-v">–</b></div>
       </div>
-      <div id="levelWarn" class="level-warn hidden">OFF-PLUMB — square up the shot</div>
+
+      <div id="levelStatus" class="level-status hidden">
+        <span id="levelStatusText">Hold steady</span>
+      </div>
+
       <div id="emptyState" class="empty">
         <p><strong>1.</strong> Start the camera, or load a photo.</p>
         <p><strong>2.</strong> Calibrate against something of known size.</p>
@@ -125,6 +131,25 @@
           <button id="btnSensors" class="btn btn-ghost">Enable sensors</button>
           <button id="btnCaps" class="btn btn-ghost">Browser capabilities</button>
         </div>
+
+        <div class="steady-box">
+          <label>What are you photographing?
+            <select id="subjectMode">
+              <option value="wall" selected>A wall or facade — phone upright</option>
+              <option value="ground">The ground or paving — phone pointing down</option>
+              <option value="free">Any angle — turn levelling guidance off</option>
+            </select>
+          </label>
+          <label class="check">
+            <input id="autoCapture" type="checkbox">
+            Auto-capture when level and steady
+          </label>
+          <p class="hint">
+            Holding still <em>and</em> tapping the shutter is the hard part. Let the phone take the
+            shot itself the moment it settles — brace against a railing or wall and just wait.
+          </p>
+        </div>
+
         <pre id="capsOut" class="out hidden"></pre>
       </div>
     </details>

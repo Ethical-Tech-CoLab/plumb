@@ -20,10 +20,10 @@ over the LAN you need HTTPS (e.g. an `ngrok`/`cloudflared` tunnel or a locally-t
 ## Test
 
 ```powershell
-node --test test/geometry.test.mjs
+node --test test/geometry.test.mjs test/level.test.mjs
 ```
 
-26 tests, including two explicit exit-criteria tests from the plan:
+42 tests. Two are explicit exit criteria from the plan:
 
 - `CAL-3` recovers known distances to **better than 0.5 %** under 0.5 px corner-detection noise.
 - The reported uncertainty **brackets true error in ≥ 95 % of trials** (Monte-Carlo, 2000 runs).
@@ -62,9 +62,11 @@ node --test test/geometry.test.mjs
 | [lib/camera.js](lib/camera.js) | Android-first capture: full-res stills, optics locking, capture profile |
 | [lib/arxr.js](lib/arxr.js) | WebXR AR measurement and ARCore depth / plane-deviation |
 | [lib/overlay.js](lib/overlay.js) | Grid, ruler, target quad, measurement rendering — always on a separate canvas |
+| [lib/level.js](lib/level.js) | Pose smoothing, graded tolerances, steadiness, bubble level, auto-capture readiness |
 | [lib/manifest.js](lib/manifest.js) | Provenance sidecar, hashing, sensors, capability probe |
 | [app.js](app.js) | UI wiring |
-| [test/geometry.test.mjs](test/geometry.test.mjs) | 26 unit tests incl. Monte-Carlo coverage validation |
+| [test/geometry.test.mjs](test/geometry.test.mjs) | 26 tests incl. Monte-Carlo coverage validation |
+| [test/level.test.mjs](test/level.test.mjs) | 16 tests for tolerances, hysteresis, smoothing, steadiness |
 
 ## Scope
 
