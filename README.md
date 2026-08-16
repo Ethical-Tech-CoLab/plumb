@@ -1,5 +1,22 @@
 # Plumb
 
+### 📱 &nbsp;Open the app — **[ethical-tech-colab.github.io/plumb](https://ethical-tech-colab.github.io/plumb/)**
+
+[![Open Plumb](https://img.shields.io/badge/Open_Plumb-Launch_on_your_phone-00e5ff?style=for-the-badge&logo=googlechrome&logoColor=white)](https://ethical-tech-colab.github.io/plumb/)
+[![Field guide](https://img.shields.io/badge/Field_guide-How_to_Plumb-2f81f7?style=for-the-badge)](HOW-TO-PLUMB.md)
+[![Deploy](https://github.com/Ethical-Tech-CoLab/plumb/actions/workflows/pages.yml/badge.svg)](https://github.com/Ethical-Tech-CoLab/plumb/actions/workflows/pages.yml)
+[![License](https://img.shields.io/badge/code-Apache_2.0-blue)](LICENSE)
+[![Content](https://img.shields.io/badge/content-CC_BY_4.0-blue)](LICENSE-CONTENT)
+
+**No install, no account.** Works in the browser on your phone. Served over HTTPS because the camera
+and orientation sensors require it. Android Chrome gets the full feature set — add it to your home
+screen to run fullscreen.
+
+New to this? Start with the **[15-minute illustrated field guide](HOW-TO-PLUMB.md)**, written for
+someone who has never done this before.
+
+---
+
 **Measured photography for landmarks.** A browser-based system for producing *measured, verifiable*
 photographs of historic buildings and bridges — with a calibrated on-screen grid and ruler, a raw
 photograph that stays raw, and cryptographically verifiable provenance.
@@ -10,18 +27,7 @@ photograph that stays raw, and cryptographically verifiable provenance.
 >
 > The plumb line is the oldest measuring instrument in building. This is the same idea, with a camera.
 
-An [Ethical Tech CoLab](https://github.com/ethical-tech-colab) project.
-
-## 📱 Try it now
-
-**<https://ethical-tech-colab.github.io/plumb/>**
-
-Open it on your phone — no install, no account. Served over HTTPS, which the camera and
-orientation sensors require. On Android Chrome you get the full feature set; add it to your home
-screen to run it fullscreen.
-
-New to this? Read **[HOW-TO-PLUMB.md](HOW-TO-PLUMB.md)** first — it's a 15-minute illustrated guide
-written for someone who has never done this before.
+An [Ethical Tech CoLab](https://github.com/Ethical-Tech-CoLab) project.
 
 ---
 
