@@ -148,6 +148,41 @@ points and one 1D scale control point** to scale, position and orient the model.
 
 ---
 
+## 1c. Where scale comes from when you cannot reach the subject
+
+Every tier above assumes you can put something of known size **in the subject plane**. For a bridge
+tower standing in water, a cornice at height, or a facade across a live roadway, you cannot.
+
+Scale has only four possible origins, and only the first needs access:
+
+| Source | Needs | Typical |
+|---|---|---|
+| Object of known size in the scene | access to the plane | 0.1–1 % |
+| Known camera-to-subject distance | a rangefinder with the range | 0.2–2 % |
+| **Known baseline between two camera stations** | **accessible ground on your side only** | 0.5–3 % |
+| Published dimension of the subject | a trustworthy document | inherits the document |
+
+The third is usually the answer: photograph from two (better, five) stations and measure the distance
+*between the stations*. Rule of thumb — **baseline ≥ 1/10 of the distance to the subject.**
+
+Full treatment, including why a projected pattern cannot supply scale and the depth-uncertainty
+tables, is in **[08-inaccessible-subjects.md](08-inaccessible-subjects.md)**.
+
+Every capture should record **where its millimetres came from**, because a measurement scaled from a
+published drawing is not independent evidence about that drawing:
+
+```jsonc
+"scale_source": {
+  "method": "baseline",          // in_scene_target | rangefinder | baseline | published_dimension
+  "reference": "stations A-B, taped",
+  "value_mm": 24380.0,
+  "stated_tolerance_mm": 10,
+  "independent_of_source": true
+}
+```
+
+---
+
 ## 1b. Where calibration actually runs
 
 Calibration is computed **twice**, for two different purposes:

@@ -72,6 +72,7 @@ routine, and makes the resulting measurement honest about its own uncertainty.
 | [05 — Server & provenance](docs/05-server-and-provenance.md) | Server architecture, the post-processing pipeline stage by stage, and the C2PA provenance chain with custom survey assertions |
 | [06 — Trust anchor & licensing](docs/06-trust-anchor-and-licensing.md) | On-device keystore signing, why a blockchain can't be the C2PA trust anchor (but is a good archival anchor), and CC BY vs CC BY-SA |
 | [07 — Backend & twin integration](docs/07-backend-and-twin-integration.md) | Why Plumb is an **evidence provider to the existing CoLab twins**, not a new twin; container and Azure deployment |
+| [08 — Measuring what you cannot touch](docs/08-inaccessible-subjects.md) | Scaling a bridge tower in water: baselines, rangefinders, published dimensions — and why a projector can't supply scale |
 | [HOW-TO-PLUMB](HOW-TO-PLUMB.md) | **Novice field guide** — illustrated, start to finish |
 
 ## Decisions on record
