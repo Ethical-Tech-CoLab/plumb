@@ -2,6 +2,9 @@
 
 **A field guide for measuring buildings with your phone.**
 
+📱 **The app: <https://ethical-tech-colab.github.io/plumb/>** — open it on your phone, no install
+needed.
+
 No experience needed. If you can take a photo, you can do this. About **15 minutes** to read, about
 **10 minutes** for your first real capture.
 

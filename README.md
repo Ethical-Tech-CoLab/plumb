@@ -12,6 +12,17 @@ photograph that stays raw, and cryptographically verifiable provenance.
 
 An [Ethical Tech CoLab](https://github.com/ethical-tech-colab) project.
 
+## 📱 Try it now
+
+**<https://ethical-tech-colab.github.io/plumb/>**
+
+Open it on your phone — no install, no account. Served over HTTPS, which the camera and
+orientation sensors require. On Android Chrome you get the full feature set; add it to your home
+screen to run it fullscreen.
+
+New to this? Read **[HOW-TO-PLUMB.md](HOW-TO-PLUMB.md)** first — it's a 15-minute illustrated guide
+written for someone who has never done this before.
+
 ---
 
 ## What problem this solves
