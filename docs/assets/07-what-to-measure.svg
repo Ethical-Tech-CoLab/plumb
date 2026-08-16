@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 560" width="760" height="560" role="img" aria-label="Diagram showing exactly which two points to measure between on the calibration card: the checkerboard saddle points where black meets white, which are the same points tapped in the app.">
-  <rect width="760" height="560" fill="#f8f9fb"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 600" width="760" height="600" role="img" aria-label="Diagram showing exactly which two points to measure between on the calibration card: the checkerboard saddle points where black meets white, which are the same points tapped in the app.">
+  <rect width="760" height="600" fill="#f8f9fb"/>
 
   <text x="380" y="30" text-anchor="middle" font-family="system-ui,sans-serif" font-size="18" font-weight="700" fill="#1a1f26">What exactly do I measure?</text>
   <text x="380" y="52" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#495057">Measure between the points where black meets white — the <tspan font-weight="700">same points you tap in the app</tspan>.</text>
@@ -64,15 +64,15 @@
 
   <!-- saddle callout -->
   <circle cx="200" cy="160" r="15" fill="none" stroke="#2f9e44" stroke-width="3"/>
-  <line x1="212" y1="150" x2="290" y2="100" stroke="#2f9e44" stroke-width="2"/>
-  <rect x="286" y="76" width="230" height="30" rx="5" fill="#ebfbee" stroke="#2f9e44" stroke-width="1.5"/>
-  <text x="401" y="96" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12.5" font-weight="700" fill="#2f9e44">measure from HERE — where the corners touch</text>
+  <line x1="213" y1="151" x2="300" y2="72" stroke="#2f9e44" stroke-width="2"/>
+  <rect x="296" y="46" width="248" height="30" rx="5" fill="#ebfbee" stroke="#2f9e44" stroke-width="1.5"/>
+  <text x="420" y="66" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12.5" font-weight="700" fill="#2f9e44">measure from HERE — where the corners touch</text>
 
   <!-- ===================== zoom detail ===================== -->
-  <text x="380" y="440" text-anchor="middle" font-family="system-ui,sans-serif" font-size="14" font-weight="700" fill="#1a1f26">Close up on one corner</text>
+  <text x="380" y="442" text-anchor="middle" font-family="system-ui,sans-serif" font-size="14" font-weight="700" fill="#1a1f26">Close up on one corner</text>
 
   <!-- correct -->
-  <g transform="translate(150,455)">
+  <g transform="translate(150,472)">
     <rect x="0" y="0" width="45" height="45" fill="#1a1f26"/>
     <rect x="45" y="45" width="45" height="45" fill="#1a1f26"/>
     <rect x="45" y="0" width="45" height="45" fill="#fff" stroke="#1a1f26" stroke-width="1"/>
@@ -83,7 +83,7 @@
   </g>
 
   <!-- wrong: outer corner -->
-  <g transform="translate(340,455)">
+  <g transform="translate(340,472)">
     <rect x="0" y="0" width="45" height="45" fill="#1a1f26"/>
     <rect x="45" y="45" width="45" height="45" fill="#1a1f26"/>
     <rect x="45" y="0" width="45" height="45" fill="#fff" stroke="#1a1f26" stroke-width="1"/>
@@ -94,7 +94,7 @@
   </g>
 
   <!-- wrong: paper edge -->
-  <g transform="translate(530,455)">
+  <g transform="translate(530,472)">
     <rect x="-22" y="-14" width="134" height="118" fill="none" stroke="#adb5bd" stroke-width="2"/>
     <rect x="0" y="0" width="45" height="45" fill="#1a1f26"/>
     <rect x="45" y="45" width="45" height="45" fill="#1a1f26"/>
