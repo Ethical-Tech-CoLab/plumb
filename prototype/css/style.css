@@ -69,6 +69,29 @@ html, body {
   border-bottom: 1px solid var(--line);
 }
 
+/*
+ * Build tag. Exists because a deploy that silently doesn't reach the device is
+ * indistinguishable from a deploy that changed nothing — which happened, via
+ * GitHub Pages' max-age=600 on unversioned asset URLs. Now the running build is
+ * always visible, and tapping it forces a genuinely fresh copy.
+ */
+.build-tag {
+  position: fixed;
+  right: 4px;
+  bottom: 2px;
+  z-index: 20;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font: 500 9px/1.4 ui-monospace, Consolas, monospace;
+  color: var(--muted);
+  background: rgba(5, 8, 12, .55);
+  opacity: .5;
+  cursor: pointer;
+  pointer-events: auto;
+  user-select: none;
+}
+.build-tag:hover, .build-tag:focus { opacity: 1; }
+
 .badge {
   font: 600 12px/1 ui-monospace, Consolas, monospace;
   padding: 7px 10px;
@@ -483,7 +506,9 @@ input, select {
 
   .stage-wrap {
     position: fixed;
-    top: 45px;             /* under the topbar */
+    /* Measured at runtime — a hard-coded guess overlaps whenever the topbar
+       wraps, the user has larger text, or the device has a notch. */
+    top: var(--topbar-h, 46px);
     left: 0;
     right: 0;
     bottom: 0;

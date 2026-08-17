@@ -1302,6 +1302,43 @@ $('btnExportManifest').addEventListener('click', exportManifest);
 // Expose the core for smoke testing and console experimentation.
 window.__plumb = { state, render, syncUi, adoptImage, camera };
 
+/**
+ * Build identity. The workflow rewrites the placeholder with the commit SHA;
+ * running from a checkout it stays as-is and reads "dev".
+ */
+const BUILD_ID = '__PLUMB_BUILD__'.startsWith('__') ? 'dev' : '__PLUMB_BUILD__';
+
+(() => {
+  const tag = $('buildTag');
+  tag.textContent = `build ${BUILD_ID}`;
+
+  // Tapping it reloads bypassing the cache — the manual escape hatch for
+  // exactly the stale-asset problem the version stamping now prevents.
+  const hardReload = () => {
+    const url = new URL(location.href);
+    url.searchParams.set('fresh', Date.now().toString(36));
+    location.replace(url.toString());
+  };
+  tag.addEventListener('click', hardReload);
+  tag.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); hardReload(); }
+  });
+})();
+
+/** Keep the fixed-position mobile layout honest about the real topbar height. */
+(() => {
+  const bar = document.querySelector('.topbar');
+  if (!bar) return;
+  const apply = () => {
+    const h = Math.ceil(bar.getBoundingClientRect().height);
+    document.documentElement.style.setProperty('--topbar-h', `${h}px`);
+  };
+  apply();
+  if (window.ResizeObserver) new ResizeObserver(apply).observe(bar);
+  window.addEventListener('orientationchange', () => setTimeout(apply, 150));
+  window.addEventListener('resize', apply);
+})();
+
 // Branding is presentational and opt-in; it never changes measurement behaviour.
 state.brand = initBranding();
 

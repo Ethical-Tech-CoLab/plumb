@@ -64,6 +64,37 @@ jobs:
           # Pages would otherwise run Jekyll and strip files beginning with _.
           touch _site/.nojekyll
 
+      # GitHub Pages serves assets with `Cache-Control: max-age=600` and we
+      # reference them by plain path, so a phone that loaded the app within the
+      # last ten minutes keeps using its cached CSS and JS — a deploy appears to
+      # change nothing. Stamping the commit SHA onto every local asset URL makes
+      # each build a fresh URL that cannot be served from a stale cache.
+      #
+      # ES module imports need the same treatment: `import './lib/x.js'` is a
+      # separate request and would otherwise stay cached even when app.js is new.
+      - name: Stamp asset version for cache busting
+        run: |
+          V="${GITHUB_SHA::12}"
+          echo "Stamping build $V"
+
+          # HTML entry points
+          sed -i "s|href=\"css/style.css\"|href=\"css/style.css?v=$V\"|g" _site/index.html
+          sed -i "s|src=\"app.js\"|src=\"app.js?v=$V\"|g" _site/index.html
+          sed -i "s|href=\"manifest.webmanifest\"|href=\"manifest.webmanifest?v=$V\"|g" _site/index.html
+
+          # Static and dynamic ES module imports, in app.js and within lib/
+          for f in _site/app.js _site/lib/*.js; do
+            sed -i -E "s|(from '\./[^']*\.js)'|\1?v=$V'|g" "$f"
+            sed -i -E "s|(import\('\./[^']*\.js)'|\1?v=$V'|g" "$f"
+          done
+
+          # Expose the build id so the app can display it.
+          sed -i "s|__PLUMB_BUILD__|$V|g" _site/index.html _site/app.js
+
+          echo "--- verification ---"
+          grep -o 'style.css?v=[0-9a-f]*' _site/index.html | head -1
+          grep -o "from '\./lib/geometry.js?v=[0-9a-f]*'" _site/app.js | head -1
+
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
