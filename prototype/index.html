@@ -42,27 +42,8 @@
       <canvas id="overlayCanvas"></canvas>
       <canvas id="levelCanvas" class="level-canvas"></canvas>
 
-      <div id="hud" class="hud">
-        <div class="hud-row"><span class="hud-k">pitch</span><b id="hudPitch" class="hud-v">–</b></div>
-        <div class="hud-row"><span class="hud-k">roll</span><b id="hudRoll" class="hud-v">–</b></div>
-        <div class="hud-row"><span class="hud-k">head</span><b id="hudHeading" class="hud-v">–</b></div>
-        <div class="hud-row"><span class="hud-k">GPS</span><b id="hudGps" class="hud-v">–</b></div>
-      </div>
-
       <div id="levelStatus" class="level-status hidden">
         <span id="levelStatusText">Hold steady</span>
-      </div>
-
-      <!-- Camera controls live ON the view, not down a scrolling panel. -->
-      <div id="camDock" class="cam-dock hidden">
-        <button id="btnResume" class="dock-btn" type="button" title="Back to live view"
-                aria-label="Back to live view">↺</button>
-        <button id="btnShutter" class="shutter" type="button" aria-label="Take photo">
-          <span class="shutter-ring"></span>
-          <span id="shutterCount" class="shutter-count"></span>
-        </button>
-        <button id="btnDockGrid" class="dock-btn" type="button" title="Grid on/off"
-                aria-label="Toggle grid">#</button>
       </div>
 
       <div id="emptyState" class="empty">
@@ -72,8 +53,23 @@
         <p class="muted">Everything runs locally. No image leaves this device.</p>
       </div>
     </div>
+  </section>
 
-    <div class="stage-tools">
+  <!-- ============================== PANEL ============================== -->
+  <aside class="panel" id="panel">
+    <div class="sheet-grip" id="sheetGrip" role="button" tabindex="0"
+         aria-label="Expand or collapse settings">
+      <span class="sheet-handle"></span>
+      <span class="sheet-title" id="sheetTitle">Settings &amp; measurement</span>
+    </div>
+    <div class="panel-scroll" id="panelScroll">
+
+    <!--
+      Overlay controls sit at the very top of the sheet so they are reachable in
+      the sheet's peek state without scrolling. They used to float over the
+      viewfinder, which duplicated the tray's Grid button and covered the view.
+    -->
+    <div class="overlay-tools">
       <button id="btnGridOff" class="chip chip-on">Grid off</button>
       <button id="btnGridComp" class="chip">Composition</button>
       <button id="btnGridMetric" class="chip" disabled>Metric grid</button>
@@ -99,16 +95,6 @@
         </select>
       </label>
     </div>
-  </section>
-
-  <!-- ============================== PANEL ============================== -->
-  <aside class="panel" id="panel">
-    <div class="sheet-grip" id="sheetGrip" role="button" tabindex="0"
-         aria-label="Expand or collapse settings">
-      <span class="sheet-handle"></span>
-      <span class="sheet-title" id="sheetTitle">Settings &amp; measurement</span>
-    </div>
-    <div class="panel-scroll" id="panelScroll">
 
     <details open>
       <summary>1 · Capture</summary>
@@ -168,6 +154,20 @@
             Holding still <em>and</em> tapping the shutter is the hard part. Let the phone take the
             shot itself the moment it settles — brace against a railing or wall and just wait.
           </p>
+          <!--
+            The numeric pose readout used to sit on the viewfinder. It was noise
+            there: the bubble already tells you what to do, and a number you have
+            to read and interpret is the slowest possible way to aim a camera.
+            It lives here instead, because the values do go into the sidecar and
+            it is reasonable to want to check them.
+          -->
+          <div class="pose-readout" id="poseReadout">
+            <div class="pose-row"><span class="pose-k">pitch</span><b id="hudPitch" class="pose-v">–</b></div>
+            <div class="pose-row"><span class="pose-k">roll</span><b id="hudRoll" class="pose-v">–</b></div>
+            <div class="pose-row"><span class="pose-k">heading</span><b id="hudHeading" class="pose-v">–</b></div>
+            <div class="pose-row"><span class="pose-k">GPS</span><b id="hudGps" class="pose-v">–</b></div>
+          </div>
+          <p class="hint" id="poseHint">Tap <b>Enable sensors</b> above to start these.</p>
         </div>
 
         <pre id="capsOut" class="out hidden"></pre>
@@ -265,16 +265,31 @@
     </details>
 
     <details open>
-      <summary>4b · AR measure &amp; depth (Android)</summary>
+      <summary>4b · AR cross-check (optional, Android)</summary>
       <div class="pad">
         <p class="hint">
-          On Android, WebXR hit-test gives marker-free point-to-point measurement, and the ARCore
-          depth stream measures how far a feature actually stands off the calibrated plane — which is
-          the dominant source of silent error in single-image metrology.
+          <b>What this is for.</b> Everything else in Plumb measures <em>on the calibrated plane</em> —
+          the flat face you photographed. It cannot tell how far a cornice, sill or pier steps
+          <em>out of</em> that plane, and that off-plane depth is the largest silent error in
+          single-image metrology. This tool uses your phone's AR sensors to measure that depth
+          directly, so you can record it instead of guessing.
         </p>
+        <p class="hint">
+          <b>You do not need this for a normal capture.</b> Skip it unless you are checking how far a
+          feature stands proud of the wall.
+        </p>
+        <div class="warn-box">
+          <b>It takes over the whole screen.</b> That is how WebXR works — Android hands the display
+          to the AR session, so Plumb's own controls disappear until you leave it. You are not stuck:
+          <br>1 · Move the phone slowly so it finds surfaces.
+          <br>2 · Tap a surface to drop a point. Tap a second point and Plumb reports the distance.
+          <br>3 · Press the system <b>Back</b> gesture, or the <b>×</b> Android draws in the corner,
+          to come back here. Your points are kept.
+        </div>
         <div class="btn-row">
-          <button id="btnArCheck" class="btn btn-ghost">Check WebXR support</button>
-          <button id="btnArMeasure" class="btn" disabled>AR measure</button>
+          <button id="btnArCheck" class="btn btn-ghost">Check if this phone supports it</button>
+          <button id="btnArMeasure" class="btn" disabled>Start AR cross-check</button>
+          <button id="btnArEnd" class="btn btn-ghost" disabled>End AR session</button>
         </div>
         <div id="arState" class="cam-state">–</div>
         <div id="arList" class="list"></div>
@@ -368,7 +383,36 @@
     </div>
 
   </aside>
-</main>
+
+    <!--
+      Persistent control tray. This is the app's home row: it never moves, never
+      scrolls, and the sheet slides up from directly above it rather than over it.
+      A camera app whose shutter can scroll off screen is a camera app you cannot
+      use one-handed on a bridge walkway.
+    -->
+    <nav id="tray" class="tray" aria-label="Camera controls">
+      <button id="btnTrayGrid" class="tray-btn" type="button" aria-label="Cycle grid overlay">
+        <span class="tray-ico" aria-hidden="true">▦</span>
+        <span class="tray-lab" id="trayGridLab">Grid off</span>
+      </button>
+      <button id="btnTrayLevel" class="tray-btn" type="button" aria-label="Show or hide the bubble level">
+        <span class="tray-ico" aria-hidden="true">◎</span>
+        <span class="tray-lab">Level</span>
+      </button>
+      <button id="btnShutter" class="shutter" type="button" aria-label="Take photo">
+        <span class="shutter-ring"></span>
+        <span id="shutterCount" class="shutter-count"></span>
+      </button>
+      <button id="btnTrayLive" class="tray-btn" type="button" aria-label="Back to the live view">
+        <span class="tray-ico" aria-hidden="true">↺</span>
+        <span class="tray-lab">Live</span>
+      </button>
+      <button id="btnTraySheet" class="tray-btn" type="button" aria-label="Open or close setup">
+        <span class="tray-ico" aria-hidden="true">▤</span>
+        <span class="tray-lab">Setup</span>
+      </button>
+    </nav>
+  </main>
 
 <div id="toast" class="toast hidden"></div>
 

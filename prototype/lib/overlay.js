@@ -22,6 +22,33 @@ export function clear(ctx) {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 }
 
+/**
+ * Decide the overlay canvas's backing-store size for a given source.
+ *
+ * The overlay was only ever sized when a still was adopted, so during live
+ * preview it kept the HTML default of 300x150. The grid was therefore drawn
+ * into a small box floating in the middle of the stage rather than over the
+ * picture — which reads as "the grid toggle does nothing in the viewfinder,
+ * but the grid is in the photo".
+ *
+ * Matching the source's own pixel dimensions makes the canvas letterbox under
+ * `max-width/max-height: 100%` exactly the way a <video> does, so the overlay
+ * and the image stay registered without measuring any layout.
+ *
+ * Returns null when nothing needs to change, so callers can skip the resize —
+ * assigning canvas.width clears the canvas even when the value is unchanged.
+ */
+export function overlayTargetSize({
+  sourceWidth = 0,
+  sourceHeight = 0,
+  currentWidth = 0,
+  currentHeight = 0,
+} = {}) {
+  if (!sourceWidth || !sourceHeight) return null;
+  if (sourceWidth === currentWidth && sourceHeight === currentHeight) return null;
+  return { width: sourceWidth, height: sourceHeight };
+}
+
 /** CAL-0: screen-space composition grid. Carries an explicit NOT TO SCALE stamp. */
 export function drawCompositionGrid(ctx, { divisions = 3 } = {}) {
   const { width: w, height: h } = ctx.canvas;

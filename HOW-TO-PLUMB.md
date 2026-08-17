@@ -262,11 +262,22 @@ fires by itself once it's settled, then **switches itself off**.
 This removes the hardest part of handheld capture: holding still *and* pressing a button at the same
 time. If you'd rather shoot manually, the **shutter button** is always on screen.
 
-### Finding the settings
+### The controls stay put
 
-On a phone the viewfinder stays full-screen and the settings live in a **sheet at the bottom**. Drag
-the handle up, or tap it, to cycle between a peek, half screen and full screen. The camera view never
-scrolls away.
+On a phone the viewfinder fills the screen and the controls you use most sit in a **tray fixed along
+the bottom edge**. The tray never scrolls and is never covered:
+
+| Button | What it does |
+|---|---|
+| ▦ **Grid** | Cycles the on-screen grid: off → thirds → metric (once calibrated) |
+| ◎ **Level** | Shows or hides the bubble level and its prompts |
+| 🔘 **Shutter** | Takes the photograph |
+| ↺ **Live** | Returns to the live view after reviewing a shot |
+| ▤ **Setup** | Opens and closes the settings sheet |
+
+Everything else lives in a **sheet that slides up from just above the tray**. Drag its handle, or tap
+**Setup**, to cycle between a peek, half screen and full screen. The camera view never scrolls away,
+and the shutter is always under your thumb.
 
 ### Photographing the ground?
 
@@ -289,7 +300,7 @@ also want a clean photograph for design work. So you get both.
 
 | | How | When |
 |---|---|---|
-| 🔘 **The shutter button** | The big round button at the bottom of the view. Always there, always works | The normal way |
+| 🔘 **The shutter button** | The big round button in the tray at the bottom. Always there, always works | The normal way |
 | ⏱️ **Auto-capture** | Tick it in the sheet, brace the phone, wait. It fires when level and steady | When tapping the screen would shake the shot |
 
 **Auto-capture fires once and then switches itself off.** That's deliberate — you have your
@@ -298,7 +309,7 @@ button so you can see it coming, and moving the phone cancels it.
 
 Tapping the shutter always wins: it cancels any pending auto-capture and shoots immediately.
 
-The **↺ button** returns you to the live view after reviewing a shot.
+The **↺ Live** button in the tray returns you to the live view after reviewing a shot.
 
 ### Before you tap the button
 
@@ -331,13 +342,16 @@ right — that's the next step.
 
 ### Turn on the grid
 
-Tap **Metric grid** and a real-world grid appears — 100 mm squares, or 1 foot, your choice.
+Tap **▦ Grid** in the tray to cycle the overlay, or pick **Metric grid** in the sheet. A real-world
+grid appears — 100 mm squares, or 1 foot, your choice. The grid draws over the live view as well as
+over a captured photo, so you can use it to frame the shot.
 
 On an angled photo the grid will **look like it converges into the distance**. That's correct. It's
 what a real grid does in perspective, and it's your visual proof that Plumb has understood the
 geometry of the shot.
 
-Tap **Grid off** any time to see the clean photo. The grid is never baked into your original image.
+Cycle **Grid** back to off any time to see the clean photo. The grid is never baked into your
+original image.
 
 ---
 

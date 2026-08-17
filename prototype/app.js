@@ -33,6 +33,7 @@ import {
   drawMeasurement,
   drawStamp,
   composite,
+  overlayTargetSize,
 } from './lib/overlay.js';
 
 import {
@@ -89,6 +90,7 @@ const state = {
   arMeasurements: [],
   gridMode: 'off',           // 'off' | 'composition' | 'metric'
   showRuler: false,
+  showLevel: true,           // bubble level + guidance drawn over the view
   unit: 'mm',
   intervalMm: 100,
 
@@ -110,6 +112,8 @@ const levelCanvas = $('levelCanvas');
 const lctx = levelCanvas.getContext('2d');
 
 const AUTO_CAPTURE_DELAY_MS = 900;
+/* Must stay in step with the camera-first breakpoint in style.css. */
+const COMPACT_QUERY = '(max-width: 900px), (max-height: 560px)';
 let autoCaptureTimer = null;
 let autoCaptureDeadline = 0;
 let captureInFlight = false;
@@ -125,21 +129,24 @@ function fmtDeg(v) {
   return `${r > 0 ? '+' : r < 0 ? '−' : ' '}${String(Math.abs(r)).padStart(2, ' ')}°`;
 }
 
-function renderLevel(state) {
-  // Numbers are secondary — updated slowly, in whole degrees, for the record.
-  $('hudPitch').textContent = fmtDeg(state.pitchOff);
-  $('hudRoll').textContent = fmtDeg(state.rollOff);
+function renderLevel(levelState) {
+  // Numbers are secondary — they live in the sheet, in whole degrees, for the
+  // record. The bubble on the view is what you actually aim with.
+  $('hudPitch').textContent = fmtDeg(levelState.pitchOff);
+  $('hudRoll').textContent = fmtDeg(levelState.rollOff);
   $('hudHeading').textContent =
-    state.heading == null ? '–' : `${String(Math.round(state.heading)).padStart(3, ' ')}°`;
+    levelState.heading == null ? '–' : `${String(Math.round(levelState.heading)).padStart(3, ' ')}°`;
+  $('poseHint').classList.add('hidden');
 
-  // The bubble is the primary instrument. No reading required.
   const stage = $('stage').getBoundingClientRect();
   levelCanvas.width = Math.round(stage.width);
   levelCanvas.height = Math.round(stage.height);
   lctx.clearRect(0, 0, levelCanvas.width, levelCanvas.height);
 
-  if (state.mode.idealPitch !== null) {
-    drawBubbleLevel(lctx, state, {
+  const guidanceOn = state.showLevel && levelState.mode.idealPitch !== null;
+
+  if (guidanceOn) {
+    drawBubbleLevel(lctx, levelState, {
       cx: levelCanvas.width / 2,
       cy: levelCanvas.height / 2,
       radius: Math.min(64, Math.max(40, levelCanvas.width * 0.14)),
@@ -149,7 +156,7 @@ function renderLevel(state) {
   const el = $('levelStatus');
   el.classList.remove('hidden', 'is-ready', 'is-close', 'is-off');
 
-  if (state.mode.idealPitch === null) {
+  if (!guidanceOn) {
     el.classList.add('hidden');
     return;
   }
@@ -157,16 +164,16 @@ function renderLevel(state) {
   // Say what to DO, not what the numbers are.
   let text;
   let cls;
-  if (state.ready) {
+  if (levelState.ready) {
     text = autoCaptureArmed ? 'Hold it — capturing…' : '✓ Good — take the shot';
     cls = 'is-ready';
-  } else if (!state.steady) {
+  } else if (!levelState.steady) {
     text = 'Hold steady…';
     cls = 'is-close';
   } else {
-    const off = state.pitchOff;
+    const off = levelState.pitchOff;
     const dir =
-      state.mode.id === 'ground'
+      levelState.mode.id === 'ground'
         ? off > 0 ? 'Tip the top of the phone down' : 'Tip the top of the phone up'
         : off > 0 ? 'Lean the top of the phone back' : 'Tip the top of the phone forward';
     text = dir;
@@ -378,9 +385,14 @@ async function grabFrame() {
 function resumePreview() {
   if (!camera.stream) return toast('Start the camera first.');
   video.classList.remove('hidden');
-  clear(octx);
   state.imageBlob = null;
   resetCalibration();
+  // Hand the overlay back to the video before drawing, or the grid stays at the
+  // still's dimensions and no longer lines up with the preview.
+  overlayCanvas.width = 0;
+  sizeOverlayToVideo();
+  clear(octx);
+  render();
   toast('Back to live view.');
 }
 
@@ -707,8 +719,37 @@ function renderMeasurements() {
 
 // --------------------------------------------------------------- render
 
+/**
+ * Match the overlay canvas to the live video's intrinsic size.
+ *
+ * The overlay only ever got a size inside adoptImage(), so until a photo was
+ * taken it sat at the HTML default of 300x150. The grid was therefore drawn
+ * into a small box floating in the middle of the stage rather than over the
+ * picture — which read as "the grid toggle does nothing in the viewfinder, but
+ * the grid is in the photo".
+ *
+ * Using the video's own pixel dimensions makes the canvas letterbox under
+ * `max-width/max-height: 100%` exactly the way the video does, so the two stay
+ * registered without measuring anything.
+ */
+function sizeOverlayToVideo() {
+  if (state.imageBlob) return false;          // a captured still owns the canvas
+  const next = overlayTargetSize({
+    sourceWidth: video.videoWidth,
+    sourceHeight: video.videoHeight,
+    currentWidth: overlayCanvas.width,
+    currentHeight: overlayCanvas.height,
+  });
+  if (next) {
+    overlayCanvas.width = next.width;
+    overlayCanvas.height = next.height;
+  }
+  return true;
+}
+
 function render() {
-  if (!overlayCanvas.width) return;
+  sizeOverlayToVideo();
+  if (!overlayCanvas.width || !overlayCanvas.height) return;
   clear(octx);
 
   if (state.gridMode === 'composition') {
@@ -754,7 +795,7 @@ function syncUi() {
 
   // On a phone there is no room for the full tier name; the tier code and
   // status are the two things an operator actually needs to see.
-  const compact = window.matchMedia('(max-width: 620px)').matches;
+  const compact = window.matchMedia(COMPACT_QUERY).matches;
   const note = CALIBRATION_TIERS[state.tier]?.label ?? '';
   if (state.tier === 'CAL-0') {
     badge.textContent = compact ? 'CAL-0 · NO SCALE' : 'CAL-0 · NOT TO SCALE';
@@ -864,15 +905,15 @@ function setShutterBusy(busy) {
   s.disabled = busy;
 }
 
-/** Keep the dock, shutter and auto-capture controls consistent with state. */
+/** Keep the tray, shutter and auto-capture controls consistent with state. */
 function syncCaptureUi() {
   const live = !!camera.stream && !video.classList.contains('hidden');
   const hasImage = !!state.imageBlob;
 
-  $('camDock').classList.toggle('hidden', !camera.stream);
   $('btnShutter').disabled = !live || captureInFlight;
-  $('btnResume').disabled = !hasImage || live;
-  $('btnDockGrid').classList.toggle('is-on', state.gridMode !== 'off');
+  $('btnTrayLive').disabled = !hasImage || live;
+  $('btnTrayGrid').classList.toggle('is-on', state.gridMode !== 'off');
+  $('btnTrayLevel').classList.toggle('is-on', state.showLevel);
 
   const armed = autoCaptureEnabled();
   $('btnShutter').classList.toggle('is-armed', armed && live);
@@ -896,12 +937,22 @@ setInterval(tickAutoCaptureCountdown, 120);
 // ----------------------------------------------------------- bottom sheet
 
 const SNAPS = ['peek', 'half', 'full'];
+const SHEET_PEEK_PX = 92;
+
+/** Pixel offset of each snap point, derived from the sheet's measured height. */
+function snapOffset(panel, snap) {
+  const h = panel.getBoundingClientRect().height || window.innerHeight * 0.6;
+  if (snap === 'full') return 0;
+  if (snap === 'half') return h * 0.42;
+  return Math.max(0, h - SHEET_PEEK_PX);
+}
 
 function setSheet(snap) {
   const panel = $('panel');
   panel.dataset.snap = snap;
   $('sheetTitle').textContent =
     snap === 'peek' ? 'Settings & measurement' : 'Drag down to see the view';
+  $('btnTraySheet').classList.toggle('is-on', snap !== 'peek');
   try { localStorage.setItem('plumb.sheet', snap); } catch { /* ignore */ }
 }
 
@@ -933,7 +984,9 @@ function initSheet() {
   grip.addEventListener('pointermove', (e) => {
     if (startY == null) return;
     const dy = e.clientY - startY;
-    const base = { peek: window.innerHeight * 0.88 - 92, half: window.innerHeight * 0.45, full: 0 }[startSnap];
+    // Offsets come from the sheet's real height so the drag tracks the finger
+    // regardless of viewport, topbar wrap or tray height.
+    const base = snapOffset(panel, startSnap);
     panel.style.transform = `translateY(${Math.max(0, base + dy)}px)`;
   });
   const end = (e) => {
@@ -1067,13 +1120,27 @@ $('btnShutter').addEventListener('click', () => {
   cancelAutoCapture();
   takeFullResPhoto();
 });
-$('btnResume').addEventListener('click', resumePreview);
-$('btnDockGrid').addEventListener('click', () => {
-  const next = state.gridMode === 'off'
-    ? (state.H ? 'metric' : 'composition')
-    : 'off';
+$('btnTrayLive').addEventListener('click', resumePreview);
+$('btnTrayGrid').addEventListener('click', () => {
+  // Cycle rather than toggle: off -> composition -> metric (once calibrated).
+  const order = state.H ? ['off', 'composition', 'metric'] : ['off', 'composition'];
+  const next = order[(order.indexOf(state.gridMode) + 1) % order.length];
   setGrid(next);
+});
+$('btnTrayLevel').addEventListener('click', () => {
+  state.showLevel = !state.showLevel;
+  if (!state.showLevel) {
+    lctx.clearRect(0, 0, levelCanvas.width, levelCanvas.height);
+    $('levelStatus').classList.add('hidden');
+  } else if (orientationState) {
+    renderLevel(orientationState);
+  }
   syncCaptureUi();
+  toast(state.showLevel ? 'Levelling guide on.' : 'Levelling guide off.');
+});
+$('btnTraySheet').addEventListener('click', () => {
+  const panel = $('panel');
+  setSheet(panel.dataset.snap === 'peek' ? 'full' : 'peek');
 });
 $('fileInput').addEventListener('change', (e) => {
   const f = e.target.files?.[0];
@@ -1117,25 +1184,40 @@ $('zoomSlider').addEventListener('input', async (e) => {
 
 // ---- WebXR AR measurement (Android / ARCore)
 
+let arSession = null;
+
 $('btnArCheck').addEventListener('click', async () => {
   const s = await xrSupport();
   $('arState').textContent = s.available
-    ? 'immersive-ar supported — marker-free AR measurement available.'
-    : `Not available: ${s.reason}`;
+    ? 'Supported. This phone can measure off-plane depth with its AR sensors.'
+    : `Not available on this phone/browser: ${s.reason}`;
   $('btnArMeasure').disabled = !s.available;
-  toast(s.available ? 'WebXR immersive-AR is available.' : `WebXR unavailable: ${s.reason}`, 4600);
+  toast(s.available ? 'AR cross-check is available.' : `Not available: ${s.reason}`, 4600);
 });
 
 $('btnArMeasure').addEventListener('click', async () => {
+  // Handing the whole display to an immersive session is surprising enough to
+  // be worth one confirmation. The complaint was not that it happened but that
+  // it happened without warning and with no obvious way back.
+  const ok = window.confirm(
+    'Start the AR cross-check?\n\n'
+    + 'Android will hand the whole screen to the AR view, so Plumb\'s controls '
+    + 'disappear while it runs.\n\n'
+    + 'Move the phone slowly to find surfaces, then tap two points to measure '
+    + 'between them.\n\n'
+    + 'Use the system Back gesture to return. Your points are kept.'
+  );
+  if (!ok) return;
+
   try {
-    const session = await startArMeasureSession({
+    arSession = await startArMeasureSession({
       onStatus: (st) => {
         if (st.depthAvailable) {
-          $('arState').textContent = 'AR session active · ARCore depth stream available.';
+          $('arState').textContent = 'AR running · depth sensing available. Tap two points.';
         }
       },
       onPoint: (p, pts) => {
-        $('arState').textContent = `AR point ${pts.length} captured.`;
+        $('arState').textContent = `AR point ${pts.length} placed.`;
         if (pts.length >= 2) {
           const a = pts[pts.length - 2];
           const b = pts[pts.length - 1];
@@ -1145,7 +1227,7 @@ $('btnArMeasure').addEventListener('click', async () => {
             valueMm: mm,
             a, b,
             method: 'webxr-hit-test',
-            depthAvailable: session.depthAvailable,
+            depthAvailable: arSession?.depthAvailable,
           });
           renderArMeasurements();
         }
@@ -1153,18 +1235,32 @@ $('btnArMeasure').addEventListener('click', async () => {
           const dev = planeDeviationMm(pts);
           if (dev) {
             $('arState').textContent =
-              `Plane fit over ${pts.length} points · RMS ${dev.rmsMm.toFixed(1)} mm · max ${dev.maxAbsMm.toFixed(1)} mm off-plane.`;
+              `Plane fit over ${pts.length} points · RMS ${dev.rmsMm.toFixed(1)} mm · `
+              + `max ${dev.maxAbsMm.toFixed(1)} mm off-plane.`;
           }
         }
       },
-      onEnd: () => { $('arState').textContent = 'AR session ended.'; },
+      onEnd: () => {
+        arSession = null;
+        $('btnArEnd').disabled = true;
+        $('arState').textContent = 'AR session ended. Measurements below are kept.';
+      },
     });
-    $('arState').textContent = 'AR session starting — tap to place points.';
-    window.__arSession = session;
+    $('btnArEnd').disabled = false;
+    $('arState').textContent = 'AR starting — move the phone slowly, then tap two points.';
   } catch (err) {
+    arSession = null;
+    $('btnArEnd').disabled = true;
     $('arState').textContent = `AR failed: ${err.message}`;
     toast(`AR failed: ${err.message}`);
   }
+});
+
+$('btnArEnd').addEventListener('click', async () => {
+  try { await arSession?.end?.(); } catch { /* already gone */ }
+  arSession = null;
+  $('btnArEnd').disabled = true;
+  $('arState').textContent = 'AR session ended.';
 });
 
 function renderArMeasurements() {
@@ -1249,9 +1345,12 @@ $('btnClearMeas').addEventListener('click', () => {
 });
 
 const gridButtons = { off: $('btnGridOff'), composition: $('btnGridComp'), metric: $('btnGridMetric') };
+const GRID_LABEL = { off: 'Grid off', composition: 'Thirds', metric: 'Metric' };
 function setGrid(mode) {
   state.gridMode = mode;
   Object.entries(gridButtons).forEach(([k, b]) => b.classList.toggle('chip-on', k === mode));
+  $('trayGridLab').textContent = GRID_LABEL[mode] ?? 'Grid';
+  syncCaptureUi();
   render();
 }
 $('btnGridOff').addEventListener('click', () => setGrid('off'));
@@ -1325,19 +1424,45 @@ const BUILD_ID = '__PLUMB_BUILD__'.startsWith('__') ? 'dev' : '__PLUMB_BUILD__';
   });
 })();
 
-/** Keep the fixed-position mobile layout honest about the real topbar height. */
+/**
+ * Keep the fixed-position mobile layout honest about the real bar heights.
+ *
+ * Both are measured rather than assumed: the topbar wraps at large text sizes,
+ * and the tray grows by whatever the device reserves for its gesture bar. A
+ * hard-coded guess for either one overlaps the viewfinder or hides the shutter.
+ */
 (() => {
   const bar = document.querySelector('.topbar');
-  if (!bar) return;
+  const tray = $('tray');
   const apply = () => {
-    const h = Math.ceil(bar.getBoundingClientRect().height);
-    document.documentElement.style.setProperty('--topbar-h', `${h}px`);
+    if (bar) {
+      const h = Math.ceil(bar.getBoundingClientRect().height);
+      document.documentElement.style.setProperty('--topbar-h', `${h}px`);
+    }
+    if (tray) {
+      const h = Math.ceil(tray.getBoundingClientRect().height);
+      if (h) document.documentElement.style.setProperty('--tray-h', `${h}px`);
+    }
+    // The stage box just changed, so the overlay's fit changed with it.
+    render();
   };
   apply();
-  if (window.ResizeObserver) new ResizeObserver(apply).observe(bar);
+  if (window.ResizeObserver) {
+    const ro = new ResizeObserver(apply);
+    if (bar) ro.observe(bar);
+    if (tray) ro.observe(tray);
+  }
   window.addEventListener('orientationchange', () => setTimeout(apply, 150));
   window.addEventListener('resize', apply);
 })();
+
+/*
+ * Redraw the overlay whenever the video's own dimensions change. Switching
+ * cameras or rotating the device changes videoWidth/videoHeight without any
+ * other event firing, and a stale overlay silently stops matching the picture.
+ */
+video.addEventListener('loadedmetadata', render);
+video.addEventListener('resize', render);
 
 // Branding is presentational and opt-in; it never changes measurement behaviour.
 state.brand = initBranding();

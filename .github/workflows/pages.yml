@@ -41,7 +41,14 @@ jobs:
           node --test \
             prototype/test/geometry.test.mjs \
             prototype/test/level.test.mjs \
-            prototype/test/capture.test.mjs
+            prototype/test/capture.test.mjs \
+            prototype/test/overlay-size.test.mjs
+
+      # Layout bugs have twice looked like "the deploy did nothing": controls
+      # scrolled off screen, and the grid drawn into a 300x150 box. Neither is
+      # visible to unit tests, so lay the page out in a real browser engine.
+      - name: Check layout in headless Chrome
+        run: node tools/layout-probe.mjs
 
   build:
     name: Build site

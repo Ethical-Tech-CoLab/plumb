@@ -16,9 +16,16 @@
 
 * { box-sizing: border-box; }
 
+/*
+ * min-height, not height. With `height: 100%` the html element's scrolling box
+ * is clamped to the viewport while the body overflows past it, so any layout
+ * that is taller than one screen simply cannot be scrolled. That silently hid
+ * everything below the fold between 620px and 900px wide — which includes a
+ * phone held in landscape.
+ */
 html, body {
   margin: 0;
-  height: 100%;
+  min-height: 100%;
   background: var(--bg);
   color: var(--text);
   font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -106,12 +113,24 @@ html, body {
 main {
   display: grid;
   grid-template-columns: 1fr 380px;
+  /* Row 1 takes the space; row 2 is the tray, only as tall as it needs. */
+  grid-template-rows: 1fr auto;
   gap: 12px;
   padding: 12px;
-  height: calc(100% - 53px);
+  /* Sized against the viewport rather than a percentage of an ancestor, so it
+     no longer needs html/body to carry a definite height. dvh also tracks
+     mobile browser chrome as it hides and shows. */
+  height: calc(100vh - var(--topbar-h, 53px));
+  height: calc(100dvh - var(--topbar-h, 53px));
 }
+.stage-wrap { grid-column: 1; grid-row: 1; }
+.tray { grid-column: 1; grid-row: 2; }
+.panel { grid-column: 2; grid-row: 1 / span 2; }
 @media (max-width: 900px) {
-  main { grid-template-columns: 1fr; height: auto; }
+  /* One column: drop the explicit placement or the panel creates a phantom
+     second column and the page scrolls sideways. */
+  main { grid-template-columns: 1fr; grid-template-rows: none; height: auto; }
+  .stage-wrap, .tray, .panel { grid-column: auto; grid-row: auto; }
 }
 
 /* ------------------------------------------------------------- stage */
@@ -142,35 +161,35 @@ main {
 #overlayCanvas { cursor: crosshair; }
 .stage video.hidden, .stage canvas.hidden { display: none; }
 
-.hud {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  background: rgba(5, 8, 12, .72);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 8px 10px;
-  font: 600 11px/1.6 ui-monospace, Consolas, monospace;
-  pointer-events: none;
-}
-
 /*
- * The readout used to appear to flash. The cause was layout, not colour:
- * `space-between` with a variable-width value meant the number's left edge
- * moved every time a digit changed width, dragging the eye and making the
- * static labels look like they were twitching too.
+ * Pose readout. This lives in the sheet, not on the viewfinder.
  *
- * Fixed by pinning the label column, giving the value a fixed width, and using
- * tabular figures so every digit occupies the same advance.
+ * On the view it was actively harmful: it asked the operator to read and
+ * interpret four numbers while trying to hold a phone steady, when the bubble
+ * conveys the same thing pre-attentively. Here it is a record you can check.
+ *
+ * The layout still pins the label column and uses tabular figures, because a
+ * value whose left edge moves as digits change width drags the eye and makes
+ * the static labels appear to flash too.
  */
-.hud-row {
+.pose-readout {
   display: grid;
-  grid-template-columns: 3.4em 4.2em;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2px 14px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: rgba(0, 0, 0, .18);
+  font: 600 11.5px/1.7 ui-monospace, Consolas, monospace;
+}
+.pose-row {
+  display: grid;
+  grid-template-columns: 4.6em 4.2em;
   column-gap: 8px;
   align-items: baseline;
 }
-.hud-k { color: var(--muted); }
-.hud-v {
+.pose-k { color: var(--muted); }
+.pose-v {
   text-align: right;
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
@@ -215,24 +234,60 @@ main {
   background: rgba(0, 0, 0, .18);
 }
 
+/* Used where a control does something surprising, like handing the whole
+   display to an immersive AR session. Surprise is the thing to defuse. */
+.warn-box {
+  padding: 10px 11px;
+  border: 1px solid var(--warn);
+  border-left-width: 3px;
+  border-radius: 7px;
+  background: rgba(210, 153, 34, .09);
+  color: var(--text);
+  font: 12px/1.65 -apple-system, system-ui, sans-serif;
+  margin: 10px 0;
+}
+
+
 /* ------------------------------------------------- camera dock (shutter) */
 /*
  * The controls that matter live ON the viewfinder, the way every camera app
  * works. Nothing essential should require scrolling a panel.
  */
-.cam-dock {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 12px;
+/*
+ * The tray is the app's home row. On a phone it is fixed to the bottom edge and
+ * the sheet slides up from directly above it, so the shutter is reachable in
+ * every state. On a desktop it is a plain centred row under the stage.
+ */
+.tray {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 28px;
-  pointer-events: none;
-  z-index: 4;
+  gap: 18px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
 }
-.cam-dock > * { pointer-events: auto; }
+
+.tray-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  min-width: 58px;
+  padding: 6px 8px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font: 600 10.5px/1 -apple-system, system-ui, sans-serif;
+}
+.tray-ico { font-size: 19px; line-height: 1; }
+.tray-lab { white-space: nowrap; }
+.tray-btn:disabled { opacity: .35; cursor: not-allowed; }
+.tray-btn.is-on { color: var(--accent); border-color: var(--accent); }
+.tray-btn:active:not(:disabled) { background: rgba(255, 255, 255, .07); }
 
 .shutter {
   position: relative;
@@ -245,6 +300,7 @@ main {
   cursor: pointer;
   display: grid;
   place-items: center;
+  flex: 0 0 auto;
   transition: transform .1s ease, background .2s ease;
 }
 .shutter:active { transform: scale(.93); }
@@ -263,21 +319,6 @@ main {
   font: 700 20px/1 ui-monospace, Consolas, monospace;
   color: #0d1117;
 }
-
-.dock-btn {
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, .35);
-  background: rgba(5, 8, 12, .65);
-  color: #fff;
-  font-size: 19px;
-  cursor: pointer;
-  display: grid;
-  place-items: center;
-}
-.dock-btn:disabled { opacity: .35; cursor: not-allowed; }
-.dock-btn.is-on { border-color: var(--accent); color: var(--accent); }
 
 /* ------------------------------------------------------- bottom sheet */
 .sheet-grip { display: none; }
@@ -307,11 +348,13 @@ main {
 .empty p { margin: 6px 0; }
 .empty .muted { margin-top: 14px; font-size: 12px; opacity: .75; }
 
-.stage-tools {
+.overlay-tools {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
   align-items: center;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
 }
 .chip, .chip-label {
   background: var(--panel-2);
@@ -468,7 +511,16 @@ input, select {
 .hidden { display: none !important; }
 
 /* ------------------------------------------------------------ mobile */
-@media (max-width: 620px) {
+/*
+ * Camera-first layout.
+ *
+ * Applies wherever the two-column desktop layout doesn't fit, plus any short
+ * viewport: a phone in landscape is ~844x390, which is not narrow but is
+ * emphatically a phone, and a camera app has no business turning into a
+ * scrolling document because the device was rotated. Without the width arm,
+ * a tablet-sized window left the shutter roughly 3000px down the page.
+ */
+@media (max-width: 900px), (max-height: 560px) {
   /* The tagline is nice on a laptop and wastes four lines on a phone. */
   .brand .sub { display: none; }
   .brand strong { font-size: 15px; }
@@ -494,9 +546,9 @@ input, select {
 
   /*
    * Camera-first layout. The viewfinder is the app; it stays put and fills the
-   * screen. Settings live in a bottom sheet that slides over it, the way Maps
-   * and ride-hailing apps keep the map primary. Previously everything was one
-   * long scroll, so adjusting a setting meant losing sight of the subject.
+   * screen. Below it a tray of the most-used controls is pinned to the bottom
+   * edge and never moves. The settings sheet slides up from directly above the
+   * tray rather than over it, so the shutter is reachable in every sheet state.
    */
   main {
     display: block;
@@ -511,7 +563,7 @@ input, select {
     top: var(--topbar-h, 46px);
     left: 0;
     right: 0;
-    bottom: 0;
+    bottom: var(--tray-h, 74px);
     gap: 0;
     z-index: 1;
   }
@@ -523,37 +575,42 @@ input, select {
     border-right: 0;
   }
 
-  /* Overlay toggles sit just above the sheet, still over the view. */
-  .stage-tools {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: calc(var(--sheet-peek, 92px) + 8px);
-    padding: 0 8px;
-    gap: 5px;
-    justify-content: center;
-    z-index: 3;
-    pointer-events: none;
-  }
-  .stage-tools > * { pointer-events: auto; }
-  .chip, .chip-label {
-    padding: 7px 11px;
-    font-size: 12px;
-    background: rgba(5, 8, 12, .78);
-    backdrop-filter: blur(6px);
-  }
-  .sep { display: none; }
-
-  .cam-dock { bottom: calc(var(--sheet-peek, 92px) + 54px); }
-
-  /* --- the sheet itself --- */
-  .panel {
+  /* --- the tray: fixed, always visible, above everything --- */
+  .tray {
     position: fixed;
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 5;
-    height: 88vh;
+    z-index: 20;
+    gap: 6px;
+    justify-content: space-around;
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+    padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
+    box-shadow: 0 -2px 14px rgba(0, 0, 0, .5);
+  }
+  .shutter { width: 58px; height: 58px; }
+  .shutter-ring { width: 47px; height: 47px; }
+  .tray-btn { min-width: 52px; padding: 4px 2px; }
+
+  .chip, .chip-label { padding: 7px 11px; font-size: 12px; }
+  .sep { display: none; }
+
+  /*
+   * The sheet spans from just above the tray upward. `bottom` is the tray, and
+   * the collapsed state is expressed as a translate of its own height minus the
+   * peek, so the peek measurement stays in one place.
+   */
+  .panel {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: var(--tray-h, 74px);
+    z-index: 10;
+    height: calc(100vh - var(--topbar-h, 46px) - var(--tray-h, 74px) - 12px);
+    max-height: 78vh;
     border-radius: 16px 16px 0 0;
     border-left: 0;
     border-right: 0;
@@ -562,11 +619,11 @@ input, select {
     flex-direction: column;
     overflow: hidden;
     box-shadow: 0 -6px 24px rgba(0, 0, 0, .55);
-    transform: translateY(calc(88vh - var(--sheet-peek, 92px)));
+    transform: translateY(calc(100% - var(--sheet-peek, 92px)));
     transition: transform .28s cubic-bezier(.32, .72, 0, 1);
     touch-action: pan-y;
   }
-  .panel[data-snap="half"] { transform: translateY(45vh); }
+  .panel[data-snap="half"] { transform: translateY(42%); }
   .panel[data-snap="full"] { transform: translateY(0); }
 
   .sheet-grip {
@@ -606,8 +663,7 @@ input, select {
   input, select { padding: 9px; font-size: 16px; } /* 16px stops iOS zoom-on-focus */
   summary { padding: 13px 14px; }
 
-  .hud { font-size: 10px; padding: 6px 8px; right: 8px; top: 8px; }
-  .level-status { bottom: calc(var(--sheet-peek, 92px) + 128px); font-size: 12px; }
+  .level-status { bottom: 14px; font-size: 12px; }
 }
 
 /* Nothing should ever scroll the page sideways on a phone. */
