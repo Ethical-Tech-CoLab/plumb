@@ -17,11 +17,15 @@
  */
 
 export function detectPlatform() {
-  const ua = navigator.userAgent;
+  // Guarded so the module can be imported outside a browser (tests, SSR,
+  // build-time analysis) without throwing.
+  const nav = typeof navigator !== 'undefined' ? navigator : {};
+  const ua = nav.userAgent ?? '';
   const isAndroid = /Android/i.test(ua);
   const isIOS = /iPad|iPhone|iPod/.test(ua) ||
-    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  const hasImageCapture = typeof window.ImageCapture !== 'undefined';
+    (nav.platform === 'MacIntel' && nav.maxTouchPoints > 1);
+  const hasImageCapture =
+    typeof window !== 'undefined' && typeof window.ImageCapture !== 'undefined';
 
   let tier;
   let label;
@@ -99,17 +103,56 @@ export class CameraController {
    * Full sensor-resolution still. This is the archival capture path on Android:
    * it does not go through the video pipeline, so it is not limited to the
    * preview stream's resolution.
+   *
+   * Degrades gracefully. Asking for the maximum advertised photo size is the
+   * right thing to want, but a number of Android devices either reject the
+   * constrained call or hand back an empty/black frame for it. So we try the
+   * constrained call, then a plain one, and validate what comes back rather
+   * than trusting it — an empty blob previously reached the canvas and
+   * produced a blank screen.
+   *
+   * Re-entrant calls are refused: a second takePhoto() while one is in flight
+   * throws InvalidStateError on Android, and auto-capture made that easy to hit.
    */
   async takePhoto() {
     if (!this.imageCapture) throw new Error('ImageCapture is not available on this browser.');
+    if (this._capturing) throw new Error('A capture is already in progress.');
 
-    const settings = {};
-    const caps = this.photoCapabilities;
-    if (caps?.imageWidth?.max) settings.imageWidth = caps.imageWidth.max;
-    if (caps?.imageHeight?.max) settings.imageHeight = caps.imageHeight.max;
-    if (caps?.fillLightMode?.includes('off')) settings.fillLightMode = 'off';
+    this._capturing = true;
+    try {
+      const caps = this.photoCapabilities;
+      const attempts = [];
 
-    return this.imageCapture.takePhoto(settings);
+      const constrained = {};
+      if (caps?.imageWidth?.max) constrained.imageWidth = caps.imageWidth.max;
+      if (caps?.imageHeight?.max) constrained.imageHeight = caps.imageHeight.max;
+      if (caps?.fillLightMode?.includes('off')) constrained.fillLightMode = 'off';
+      if (Object.keys(constrained).length) attempts.push(constrained);
+
+      // Flash off alone is widely supported even where sizing is not.
+      if (caps?.fillLightMode?.includes('off')) attempts.push({ fillLightMode: 'off' });
+      attempts.push(undefined); // device default
+
+      let lastError = null;
+      for (const settings of attempts) {
+        try {
+          const blob = settings
+            ? await this.imageCapture.takePhoto(settings)
+            : await this.imageCapture.takePhoto();
+          if (blob && blob.size > 1024) return blob;
+          lastError = new Error(`Camera returned an empty image (${blob?.size ?? 0} bytes).`);
+        } catch (err) {
+          lastError = err;
+        }
+      }
+      throw lastError ?? new Error('takePhoto failed for an unknown reason.');
+    } finally {
+      this._capturing = false;
+    }
+  }
+
+  get isCapturing() {
+    return !!this._capturing;
   }
 
   /** Grab a preview frame. Lower resolution — framing and overlay work only. */

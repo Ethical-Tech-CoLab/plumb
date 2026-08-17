@@ -10,6 +10,8 @@
   --danger: #ff4d6d;
   --ok: #3fb950;
   --warn: #d29922;
+  /* How much of the bottom sheet peeks above the fold on a phone. */
+  --sheet-peek: 92px;
 }
 
 * { box-sizing: border-box; }
@@ -189,6 +191,74 @@ main {
   border-radius: 7px;
   background: rgba(0, 0, 0, .18);
 }
+
+/* ------------------------------------------------- camera dock (shutter) */
+/*
+ * The controls that matter live ON the viewfinder, the way every camera app
+ * works. Nothing essential should require scrolling a panel.
+ */
+.cam-dock {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  pointer-events: none;
+  z-index: 4;
+}
+.cam-dock > * { pointer-events: auto; }
+
+.shutter {
+  position: relative;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  border: 0;
+  background: rgba(255, 255, 255, .92);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, .5);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: transform .1s ease, background .2s ease;
+}
+.shutter:active { transform: scale(.93); }
+.shutter:disabled { opacity: .45; cursor: not-allowed; }
+.shutter-ring {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 3px solid #0d1117;
+  display: block;
+}
+.shutter.is-busy { background: var(--accent); }
+.shutter.is-armed { background: var(--ok); }
+.shutter-count {
+  position: absolute;
+  font: 700 20px/1 ui-monospace, Consolas, monospace;
+  color: #0d1117;
+}
+
+.dock-btn {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, .35);
+  background: rgba(5, 8, 12, .65);
+  color: #fff;
+  font-size: 19px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+.dock-btn:disabled { opacity: .35; cursor: not-allowed; }
+.dock-btn.is-on { border-color: var(--accent); color: var(--accent); }
+
+/* ------------------------------------------------------- bottom sheet */
+.sheet-grip { display: none; }
+.panel-scroll { display: contents; }
 
 .level-warn {
   position: absolute;
@@ -399,14 +469,120 @@ input, select {
   .brand-toggle { padding: 5px 8px; font-size: 10px; }
   .brand-org { margin-left: 6px; font-size: 10px; padding: 2px 6px; }
 
-  main { padding: 8px; gap: 8px; }
-  .stage { min-height: 260px; }
+  /*
+   * Camera-first layout. The viewfinder is the app; it stays put and fills the
+   * screen. Settings live in a bottom sheet that slides over it, the way Maps
+   * and ride-hailing apps keep the map primary. Previously everything was one
+   * long scroll, so adjusting a setting meant losing sight of the subject.
+   */
+  main {
+    display: block;
+    padding: 0;
+    height: auto;
+  }
+
+  .stage-wrap {
+    position: fixed;
+    top: 45px;             /* under the topbar */
+    left: 0;
+    right: 0;
+    bottom: 0;
+    gap: 0;
+    z-index: 1;
+  }
+  .stage {
+    flex: 1;
+    min-height: 0;
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+  }
+
+  /* Overlay toggles sit just above the sheet, still over the view. */
+  .stage-tools {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(var(--sheet-peek, 92px) + 8px);
+    padding: 0 8px;
+    gap: 5px;
+    justify-content: center;
+    z-index: 3;
+    pointer-events: none;
+  }
+  .stage-tools > * { pointer-events: auto; }
+  .chip, .chip-label {
+    padding: 7px 11px;
+    font-size: 12px;
+    background: rgba(5, 8, 12, .78);
+    backdrop-filter: blur(6px);
+  }
+  .sep { display: none; }
+
+  .cam-dock { bottom: calc(var(--sheet-peek, 92px) + 54px); }
+
+  /* --- the sheet itself --- */
+  .panel {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 5;
+    height: 88vh;
+    border-radius: 16px 16px 0 0;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 -6px 24px rgba(0, 0, 0, .55);
+    transform: translateY(calc(88vh - var(--sheet-peek, 92px)));
+    transition: transform .28s cubic-bezier(.32, .72, 0, 1);
+    touch-action: pan-y;
+  }
+  .panel[data-snap="half"] { transform: translateY(45vh); }
+  .panel[data-snap="full"] { transform: translateY(0); }
+
+  .sheet-grip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px 10px;
+    cursor: grab;
+    flex: 0 0 auto;
+    background: var(--panel);
+    border-bottom: 1px solid var(--line);
+  }
+  .sheet-handle {
+    width: 40px;
+    height: 4px;
+    border-radius: 999px;
+    background: var(--muted);
+    opacity: .55;
+  }
+  .sheet-title {
+    font: 600 12.5px/1 -apple-system, system-ui, sans-serif;
+    color: var(--muted);
+  }
+
+  .panel-scroll {
+    display: block;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
 
   /* Comfortable touch targets in the field, with gloves on. */
-  .chip, .chip-label { padding: 8px 13px; font-size: 12.5px; }
   .btn { padding: 11px 12px; font-size: 13.5px; min-width: 100px; }
   input, select { padding: 9px; font-size: 16px; } /* 16px stops iOS zoom-on-focus */
   summary { padding: 13px 14px; }
+
+  .hud { font-size: 10px; padding: 6px 8px; right: 8px; top: 8px; }
+  .level-status { bottom: calc(var(--sheet-peek, 92px) + 128px); font-size: 12px; }
 }
 
 /* Nothing should ever scroll the page sideways on a phone. */

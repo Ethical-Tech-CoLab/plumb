@@ -109,8 +109,10 @@ const camera = new CameraController();
 const levelCanvas = $('levelCanvas');
 const lctx = levelCanvas.getContext('2d');
 
-let autoCaptureArmed = false;
+const AUTO_CAPTURE_DELAY_MS = 900;
 let autoCaptureTimer = null;
+let autoCaptureDeadline = 0;
+let captureInFlight = false;
 
 /**
  * A degree value rendered for humans: whole degrees, fixed width, and a
@@ -190,27 +192,55 @@ const levelTracker = new LevelTracker({
     renderLevel(levelState);
   },
   onReadyChange: (levelState) => {
-    if (!$('autoCapture').checked || !camera.imageCapture) return;
-    if (levelState.ready) {
-      // Short settle delay: capture after the hand relaxes, not during the
-      // movement that got us here.
-      autoCaptureArmed = true;
-      clearTimeout(autoCaptureTimer);
-      autoCaptureTimer = setTimeout(async () => {
-        if (levelTracker.ready) {
-          autoCaptureArmed = false;
-          await takeFullResPhoto();
-          toast('Auto-captured while level and steady.');
-        }
-      }, 700);
-    } else {
-      autoCaptureArmed = false;
-      clearTimeout(autoCaptureTimer);
+    if (!levelState.ready) {
+      cancelAutoCapture();
+      return;
     }
+    armAutoCapture();
   },
 });
 
 let orientationState = null;
+
+// --------------------------------------------------- auto-capture control
+
+/**
+ * Auto-capture is deliberately ONE SHOT.
+ *
+ * The first version re-armed the instant the pose was still good, which after
+ * a successful capture it always is — so it fired again, and again. It now
+ * disarms itself after firing and must be switched back on. That is also the
+ * honest behaviour: you have your photograph, the app should stop.
+ */
+function autoCaptureEnabled() {
+  return $('autoCapture').checked && !!camera.imageCapture && !!camera.stream;
+}
+
+function armAutoCapture() {
+  if (!autoCaptureEnabled() || captureInFlight) return;
+  cancelAutoCapture();
+
+  autoCaptureDeadline = performance.now() + AUTO_CAPTURE_DELAY_MS;
+  autoCaptureTimer = setTimeout(async () => {
+    autoCaptureTimer = null;
+    autoCaptureDeadline = 0;
+    // Re-check: the operator may have moved during the settle delay.
+    if (!levelTracker.ready || !autoCaptureEnabled() || captureInFlight) return;
+
+    const ok = await takeFullResPhoto({ auto: true });
+    if (ok) {
+      // One shot. Disarm so it cannot machine-gun the shutter.
+      $('autoCapture').checked = false;
+      syncCaptureUi();
+    }
+  }, AUTO_CAPTURE_DELAY_MS);
+}
+
+function cancelAutoCapture() {
+  if (autoCaptureTimer) clearTimeout(autoCaptureTimer);
+  autoCaptureTimer = null;
+  autoCaptureDeadline = 0;
+}
 
 const imageCanvas = $('imageCanvas');
 const overlayCanvas = $('overlayCanvas');
@@ -293,30 +323,65 @@ async function startCamera() {
   }
 }
 
-/** Primary archival capture path on Android: full sensor resolution, in-page. */
-async function takeFullResPhoto() {
+/**
+ * Primary archival capture path on Android: full sensor resolution, in-page.
+ *
+ * @param {object} opts
+ * @param {boolean} opts.auto  true when fired by the level tracker
+ */
+async function takeFullResPhoto({ auto = false } = {}) {
+  if (captureInFlight) return false;
+  captureInFlight = true;
+  setShutterBusy(true);
+
   try {
     const blob = await camera.takePhoto();
     updateCamState();
     await adoptImage(blob, `capture-${Date.now()}.jpg`, 'image-capture-full-res');
-    toast(`Full-resolution still captured (${imageCanvas.width}×${imageCanvas.height}).`);
+    toast(auto
+      ? `Auto-captured (${imageCanvas.width}×${imageCanvas.height}). Auto-capture is now off.`
+      : `Captured ${imageCanvas.width}×${imageCanvas.height}.`);
+    return true;
   } catch (err) {
-    toast(`Full-res capture failed: ${err.message}`);
+    // Keep the live preview up. A failed capture must never leave a blank stage.
+    video.classList.remove('hidden');
+    toast(`Capture failed: ${err.message}`, 5000);
+    return false;
+  } finally {
+    captureInFlight = false;
+    setShutterBusy(false);
   }
 }
 
+/** Live preview frame — framing and overlay only, not an archival capture. */
 async function grabFrame() {
   const w = video.videoWidth;
   const h = video.videoHeight;
   if (!w || !h) return toast('Camera not ready yet.');
 
-  imageCanvas.width = w;
-  imageCanvas.height = h;
-  ictx.drawImage(video, 0, 0, w, h);
+  const scratch = document.createElement('canvas');
+  scratch.width = w;
+  scratch.height = h;
+  scratch.getContext('2d').drawImage(video, 0, 0, w, h);
 
-  const blob = await new Promise((res) => imageCanvas.toBlob(res, 'image/jpeg', 0.95));
-  await adoptImage(blob, `frame-${Date.now()}.jpg`, 'camera-frame');
-  toast('Preview frame frozen — framing/overlay use only, not an archival capture.', 5000);
+  const blob = await new Promise((res) => scratch.toBlob(res, 'image/jpeg', 0.95));
+  try {
+    await adoptImage(blob, `frame-${Date.now()}.jpg`, 'camera-frame');
+    toast('Preview frame frozen — framing/overlay use only, not an archival capture.', 5000);
+  } catch (err) {
+    video.classList.remove('hidden');
+    toast(`Freeze failed: ${err.message}`);
+  }
+}
+
+/** Return to the live preview after reviewing a shot. */
+function resumePreview() {
+  if (!camera.stream) return toast('Start the camera first.');
+  video.classList.remove('hidden');
+  clear(octx);
+  state.imageBlob = null;
+  resetCalibration();
+  toast('Back to live view.');
 }
 
 async function loadFile(file) {
@@ -324,8 +389,29 @@ async function loadFile(file) {
   toast(`Loaded ${file.name}. Original bytes preserved for export.`);
 }
 
+/**
+ * Adopt a captured image as the working frame.
+ *
+ * Validates before it commits. The previous version drew whatever it was given
+ * and then hid the live preview, so an empty or undecodable blob left a 0x0
+ * canvas over a hidden video — a blank screen with no error anywhere.
+ */
 async function adoptImage(blob, name, mode) {
-  const bitmap = await createImageBitmap(blob);
+  if (!blob || blob.size < 1024) {
+    throw new Error(`Empty image from the camera (${blob?.size ?? 0} bytes).`);
+  }
+
+  let bitmap;
+  try {
+    bitmap = await createImageBitmap(blob);
+  } catch (err) {
+    throw new Error(`Could not decode the captured image: ${err.message}`);
+  }
+  if (!bitmap.width || !bitmap.height) {
+    bitmap.close?.();
+    throw new Error('Captured image decoded to zero size.');
+  }
+
   imageCanvas.width = bitmap.width;
   imageCanvas.height = bitmap.height;
   overlayCanvas.width = bitmap.width;
@@ -338,6 +424,7 @@ async function adoptImage(blob, name, mode) {
   state.sourceMode = mode;
   state.capturedAt = new Date().toISOString();
 
+  // Only now is it safe to swap away from the live preview.
   video.classList.add('hidden');
   $('emptyState').classList.add('hidden');
 
@@ -769,6 +856,100 @@ function initUploadUi() {
   renderQueue();
 }
 
+// ------------------------------------------------ capture UI (shutter/dock)
+
+function setShutterBusy(busy) {
+  const s = $('btnShutter');
+  s.classList.toggle('is-busy', busy);
+  s.disabled = busy;
+}
+
+/** Keep the dock, shutter and auto-capture controls consistent with state. */
+function syncCaptureUi() {
+  const live = !!camera.stream && !video.classList.contains('hidden');
+  const hasImage = !!state.imageBlob;
+
+  $('camDock').classList.toggle('hidden', !camera.stream);
+  $('btnShutter').disabled = !live || captureInFlight;
+  $('btnResume').disabled = !hasImage || live;
+  $('btnDockGrid').classList.toggle('is-on', state.gridMode !== 'off');
+
+  const armed = autoCaptureEnabled();
+  $('btnShutter').classList.toggle('is-armed', armed && live);
+  $('btnShutter').title = armed
+    ? 'Auto-capture armed — or tap to shoot now'
+    : 'Take photo';
+  if (!armed) $('shutterCount').textContent = '';
+}
+
+/** Countdown inside the shutter so an imminent auto-capture is visible. */
+function tickAutoCaptureCountdown() {
+  if (!autoCaptureDeadline) {
+    $('shutterCount').textContent = '';
+    return;
+  }
+  const left = Math.max(0, autoCaptureDeadline - performance.now());
+  $('shutterCount').textContent = left > 0 ? String(Math.ceil(left / 300)) : '';
+}
+setInterval(tickAutoCaptureCountdown, 120);
+
+// ----------------------------------------------------------- bottom sheet
+
+const SNAPS = ['peek', 'half', 'full'];
+
+function setSheet(snap) {
+  const panel = $('panel');
+  panel.dataset.snap = snap;
+  $('sheetTitle').textContent =
+    snap === 'peek' ? 'Settings & measurement' : 'Drag down to see the view';
+  try { localStorage.setItem('plumb.sheet', snap); } catch { /* ignore */ }
+}
+
+function initSheet() {
+  const panel = $('panel');
+  const grip = $('sheetGrip');
+  let stored = 'peek';
+  try { stored = localStorage.getItem('plumb.sheet') || 'peek'; } catch { /* ignore */ }
+  setSheet(SNAPS.includes(stored) ? stored : 'peek');
+
+  // Tap the grip to cycle peek -> half -> full -> peek.
+  grip.addEventListener('click', () => {
+    const i = SNAPS.indexOf(panel.dataset.snap || 'peek');
+    setSheet(SNAPS[(i + 1) % SNAPS.length]);
+  });
+  grip.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); grip.click(); }
+  });
+
+  // Drag to whichever snap point you let go nearest.
+  let startY = null;
+  let startSnap = 'peek';
+  grip.addEventListener('pointerdown', (e) => {
+    startY = e.clientY;
+    startSnap = panel.dataset.snap || 'peek';
+    panel.style.transition = 'none';
+    grip.setPointerCapture?.(e.pointerId);
+  });
+  grip.addEventListener('pointermove', (e) => {
+    if (startY == null) return;
+    const dy = e.clientY - startY;
+    const base = { peek: window.innerHeight * 0.88 - 92, half: window.innerHeight * 0.45, full: 0 }[startSnap];
+    panel.style.transform = `translateY(${Math.max(0, base + dy)}px)`;
+  });
+  const end = (e) => {
+    if (startY == null) return;
+    const dy = e.clientY - startY;
+    startY = null;
+    panel.style.transition = '';
+    panel.style.transform = '';
+    if (Math.abs(dy) < 24) return;                 // treat as a tap
+    const i = SNAPS.indexOf(startSnap);
+    setSheet(dy < 0 ? SNAPS[Math.min(SNAPS.length - 1, i + 1)] : SNAPS[Math.max(0, i - 1)]);
+  };
+  grip.addEventListener('pointerup', end);
+  grip.addEventListener('pointercancel', end);
+}
+
 // --------------------------------------------------------------- export
 
 async function exportManifest() {
@@ -879,8 +1060,21 @@ async function exportManifest() {
 // ------------------------------------------------------------- listeners
 
 $('btnStartCam').addEventListener('click', startCamera);
-$('btnTakePhoto').addEventListener('click', takeFullResPhoto);
+$('btnTakePhoto').addEventListener('click', () => takeFullResPhoto());
 $('btnGrab').addEventListener('click', grabFrame);
+$('btnShutter').addEventListener('click', () => {
+  // A manual tap always wins: cancel any pending auto-capture and shoot now.
+  cancelAutoCapture();
+  takeFullResPhoto();
+});
+$('btnResume').addEventListener('click', resumePreview);
+$('btnDockGrid').addEventListener('click', () => {
+  const next = state.gridMode === 'off'
+    ? (state.H ? 'metric' : 'composition')
+    : 'off';
+  setGrid(next);
+  syncCaptureUi();
+});
 $('fileInput').addEventListener('change', (e) => {
   const f = e.target.files?.[0];
   if (f) loadFile(f);
@@ -1012,9 +1206,11 @@ $('autoCapture').addEventListener('change', (e) => {
     e.target.checked = false;
     return toast('Auto-capture needs the in-page camera — tap "Start camera" first.', 4200);
   }
+  if (!e.target.checked) cancelAutoCapture();
+  syncCaptureUi();
   toast(e.target.checked
-    ? 'Auto-capture on. Brace the phone and wait — it will fire when steady.'
-    : 'Auto-capture off.');
+    ? 'Auto-capture armed. Brace the phone and wait — it fires once, then switches off.'
+    : 'Auto-capture off. Use the shutter button.');
 });
 
 $('btnCaps').addEventListener('click', () => {
@@ -1111,6 +1307,11 @@ state.brand = initBranding();
 
 // Upload gating — Wi-Fi only by default, like every other photo-sync app.
 initUploadUi();
+
+// Camera-first shell: shutter dock plus a bottom sheet, so the viewfinder
+// stays primary and settings slide over it instead of scrolling it away.
+initSheet();
+syncCaptureUi();
 
 // Platform banner — Android/Chromium is the reference platform.
 (() => {

@@ -20,10 +20,10 @@ over the LAN you need HTTPS (e.g. an `ngrok`/`cloudflared` tunnel or a locally-t
 ## Test
 
 ```powershell
-node --test test/geometry.test.mjs test/level.test.mjs
+node --test test/geometry.test.mjs test/level.test.mjs test/capture.test.mjs
 ```
 
-42 tests. Two are explicit exit criteria from the plan:
+52 tests. Two are explicit exit criteria from the plan:
 
 - `CAL-3` recovers known distances to **better than 0.5 %** under 0.5 px corner-detection noise.
 - The reported uncertainty **brackets true error in ≥ 95 % of trials** (Monte-Carlo, 2000 runs).
@@ -67,6 +67,7 @@ node --test test/geometry.test.mjs test/level.test.mjs
 | [app.js](app.js) | UI wiring |
 | [test/geometry.test.mjs](test/geometry.test.mjs) | 26 tests incl. Monte-Carlo coverage validation |
 | [test/level.test.mjs](test/level.test.mjs) | 16 tests for tolerances, hysteresis, smoothing, steadiness |
+| [test/capture.test.mjs](test/capture.test.mjs) | 10 tests for capture fallbacks, re-entrancy, empty-frame rejection |
 
 ## Scope
 

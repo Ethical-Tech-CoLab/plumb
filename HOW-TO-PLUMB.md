@@ -256,11 +256,17 @@ Movement at the moment of the shutter ruins more captures than tilt ever does.
 
 ### Let the phone take the shot
 
-Tick **Auto-capture when level and steady** in the Capture panel. Brace the phone, aim, and wait — it
-fires by itself once it's settled.
+Tick **Auto-capture when level and steady** in the settings sheet. Brace the phone, aim, and wait — it
+fires by itself once it's settled, then **switches itself off**.
 
 This removes the hardest part of handheld capture: holding still *and* pressing a button at the same
-time.
+time. If you'd rather shoot manually, the **shutter button** is always on screen.
+
+### Finding the settings
+
+On a phone the viewfinder stays full-screen and the settings live in a **sheet at the bottom**. Drag
+the handle up, or tap it, to cycle between a peek, half screen and full screen. The camera view never
+scrolls away.
 
 ### Photographing the ground?
 
@@ -279,12 +285,28 @@ Plumb takes **two photos from the same spot**:
 Why two? The official documentation standard (HABS) *requires* a photo with a scale in it. But you
 also want a clean photograph for design work. So you get both.
 
-**Before you tap the button:**
+### Two ways to shoot
+
+| | How | When |
+|---|---|---|
+| 🔘 **The shutter button** | The big round button at the bottom of the view. Always there, always works | The normal way |
+| ⏱️ **Auto-capture** | Tick it in the sheet, brace the phone, wait. It fires when level and steady | When tapping the screen would shake the shot |
+
+**Auto-capture fires once and then switches itself off.** That's deliberate — you have your
+photograph, so the app stops. Tick it again for the next one. A countdown appears in the shutter
+button so you can see it coming, and moving the phone cancels it.
+
+Tapping the shutter always wins: it cancels any pending auto-capture and shoots immediately.
+
+The **↺ button** returns you to the live view after reviewing a shot.
+
+### Before you tap the button
 
 - Tap **Lock focus + exposure** — keeps the camera steady between shots *(Android)*
 - Keep **zoom at 1.0×** — zooming breaks the calibration
 - Brace your elbows against your body, breathe out, then tap
-- Use **Full-res photo**, not "Freeze preview frame" — the preview is lower quality
+- Use the shutter or auto-capture, **not** "Freeze preview frame" — that's a low-quality preview
+  grab, useful only for checking framing
 
 ![Good shot vs bad shots](docs/assets/03-good-vs-bad.svg)
 

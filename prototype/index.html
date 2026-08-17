@@ -51,6 +51,18 @@
         <span id="levelStatusText">Hold steady</span>
       </div>
 
+      <!-- Camera controls live ON the view, not down a scrolling panel. -->
+      <div id="camDock" class="cam-dock hidden">
+        <button id="btnResume" class="dock-btn" type="button" title="Back to live view"
+                aria-label="Back to live view">↺</button>
+        <button id="btnShutter" class="shutter" type="button" aria-label="Take photo">
+          <span class="shutter-ring"></span>
+          <span id="shutterCount" class="shutter-count"></span>
+        </button>
+        <button id="btnDockGrid" class="dock-btn" type="button" title="Grid on/off"
+                aria-label="Toggle grid">#</button>
+      </div>
+
       <div id="emptyState" class="empty">
         <p><strong>1.</strong> Start the camera, or load a photo.</p>
         <p><strong>2.</strong> Calibrate against something of known size.</p>
@@ -88,7 +100,13 @@
   </section>
 
   <!-- ============================== PANEL ============================== -->
-  <aside class="panel">
+  <aside class="panel" id="panel">
+    <div class="sheet-grip" id="sheetGrip" role="button" tabindex="0"
+         aria-label="Expand or collapse settings">
+      <span class="sheet-handle"></span>
+      <span class="sheet-title" id="sheetTitle">Settings &amp; measurement</span>
+    </div>
+    <div class="panel-scroll" id="panelScroll">
 
     <details open>
       <summary>1 · Capture</summary>
@@ -344,6 +362,8 @@
         </p>
       </div>
     </details>
+
+    </div>
 
   </aside>
 </main>
