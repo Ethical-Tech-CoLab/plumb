@@ -140,6 +140,26 @@ $env:TAVILY_API_KEY = "..."
 - Not a system that trusts GNSS as scale, or a device clock as a legal timestamp.
 - Not a system that lets an uncalibrated grid imply a measurement. `CAL-0` measurement is *disabled*,
   not merely warned about.
+- Not a tool for solid objects you can walk around — that is
+  [**Turnstone**](https://github.com/Ethical-Tech-CoLab/turnstone).
+
+## Related: Turnstone
+
+[**Turnstone**](https://github.com/Ethical-Tech-CoLab/turnstone) is the sibling tool for **3D
+records of cultural objects** — statues, vessels, masks, carved fragments. It began in this
+repository and now lives on its own.
+
+The split is geometric, not organisational. Plumb solves for **one calibrated plane** and its
+output is a photograph you can measure from; Turnstone solves for the **whole viewing sphere**
+and its output is a mesh. They share a philosophy — the raw capture stays raw, uncertainty is
+stated rather than implied, and a record declares what it does *not* prove — and almost no code.
+
+| | Plumb | Turnstone |
+|---|---|---|
+| Subject | Flat facade, often unreachable | Solid object you can walk around |
+| Scale from | Printed target in shot | Scale bar in shot, or AR |
+| Output | Measurable photograph + sidecar | Mesh / point cloud + sidecar |
+| Compute | Entirely in-browser | Capture in-browser, reconstruction on a server |
 
 ## Contributing
 
