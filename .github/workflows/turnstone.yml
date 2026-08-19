@@ -1,0 +1,44 @@
+name: Turnstone conformance
+
+# Turnstone is a separate project that happens to be staged in this repository
+# until it is relocated (see turnstone/PHOTOGRAMMETRY-SPEC.md §12, Phase 0).
+# It therefore gets its own workflow rather than being bolted onto Plumb's
+# deploy pipeline: nothing here publishes anything, and a Turnstone failure
+# must never block a Plumb deploy.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'turnstone/**'
+      - '.github/workflows/turnstone.yml'
+  pull_request:
+    paths:
+      - 'turnstone/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  conformance:
+    name: Conformance tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # The conformance suite encodes the properties that are easy to break
+      # while still looking correct: the class must be the worst dimension
+      # rather than the mean, an unmeasured dimension must never read as a
+      # pass, and heritage-v1 must not drift from DPA's rubric.ts.
+      - name: Run conformance tests
+        run: node --test turnstone/test/conformance.test.mjs
+
+      # The rubric is data and is meant to be edited by people who are not
+      # editing code. A malformed rubric should fail here, loudly, rather than
+      # at capture time in a museum.
+      - name: Validate rubric files
+        run: node turnstone/tools/validate-rubrics.mjs
